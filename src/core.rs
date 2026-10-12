@@ -8,6 +8,8 @@ use rustty_vt::terminal::{Colors, Options, Resize, Terminal};
 use rustty_vt::TerminalStream;
 
 use crate::cell::encode_cell;
+use crate::effects::{self, ActiveGuard, Sinks};
+use crate::positions;
 use crate::scrollback::{self, cell_fields};
 
 /// Cursor state as the `get_cursor_*` exports report it.
@@ -34,6 +36,8 @@ pub struct Core {
     cols: u16,
     rows: u16,
     discard: DiscardTracker,
+    /// Effect sinks; boxed so the address handed to `ActiveGuard` is stable.
+    sinks: Box<Sinks>,
 }
 
 /// `PageList.discardedRows` is a counter the wterm Zig patch adds to ghostty;
@@ -106,14 +110,35 @@ impl Core {
             cols,
             rows,
             discard: DiscardTracker::default(),
+            sinks: Box::default(),
         });
+        effects::install(&mut core.stream.handler.effects);
         core.discard_rebaseline();
         Some(core)
     }
 
     pub fn write(&mut self, data: &[u8]) {
-        self.stream.next_slice(data);
+        let screen = self.screen_identity();
+        {
+            // The raw pointer is derived from the `Box<Sinks>` and nothing
+            // else touches `self.sinks` until the guard drops; `self.stream`
+            // is a disjoint field.
+            let sinks: *mut Sinks = &mut *self.sinks;
+            let _active = ActiveGuard::new(sinks);
+            self.stream.next_slice(data);
+        }
+        // The Zig layer clears tracked positions whenever an action changes
+        // the active screen. rustty-vt has no screen-switch effect, so this
+        // compares before and after each write (see README "Known gaps").
+        if self.screen_identity() != screen {
+            self.sinks.positions.clear(&self.terminal.screens);
+        }
         self.discard_sample();
+    }
+
+    fn screen_identity(&self) -> (*mut rustty_vt::screen::Screen, usize) {
+        let s = &self.terminal.screens;
+        (s.active, s.generation(s.active_key))
     }
 
     fn primary_pages(&self) -> Option<(u64, usize, usize)> {
@@ -175,11 +200,15 @@ impl Core {
         }
         // Go through the stream's handler so resize side effects (synchronized
         // output release, mode 2048 reports) match the VT path.
-        let resized = self.stream.handler.resize(Resize {
-            cols,
-            rows,
-            cell_size_px: None,
-        });
+        let sinks: *mut Sinks = &mut *self.sinks;
+        let resized = {
+            let _active = ActiveGuard::new(sinks);
+            self.stream.handler.resize(Resize {
+                cols,
+                rows,
+                cell_size_px: None,
+            })
+        };
         if resized.is_ok() {
             self.cols = cols;
             self.rows = rows;
@@ -401,5 +430,134 @@ impl Core {
 
     pub fn scrollback_row_wraps(&self, offset: u32) -> i32 {
         scrollback::history_row_wraps(&self.terminal, offset)
+    }
+
+    // -- Responses and host effects ----------------------------------------
+
+    /// Pop the oldest queued query answer into `out` (0 = none, or `out` too
+    /// small; the entry is then kept).
+    pub fn read_response(&mut self, out: &mut [u8]) -> u32 {
+        self.sinks.queue.pop(out)
+    }
+
+    /// The new title, once: reading consumes the change.
+    pub fn title(&mut self) -> Option<&[u8]> {
+        let t = &mut self.sinks.title;
+        if !t.changed {
+            return None;
+        }
+        t.changed = false;
+        Some(&t.bytes[..t.len as usize])
+    }
+    pub fn title_ptr(&self) -> *const u8 {
+        self.sinks.title.bytes.as_ptr()
+    }
+
+    /// The new OSC 7 report, once. `Some(b"")` clears the host's directory.
+    pub fn working_directory(&mut self) -> Option<&[u8]> {
+        let d = &mut self.sinks.directory;
+        if !d.changed {
+            return None;
+        }
+        d.changed = false;
+        Some(&d.bytes[..d.len as usize])
+    }
+    pub fn working_directory_ptr(&self) -> *const u8 {
+        self.sinks.directory.bytes.as_ptr()
+    }
+
+    /// Bells since the last call (saturating), then reset to 0.
+    pub fn bell_count(&mut self) -> u32 {
+        core::mem::take(&mut self.sinks.bell_count)
+    }
+
+    /// The latest valid OSC 52 write, once.
+    pub fn clipboard_write(&mut self) -> Option<&[u8]> {
+        let c = &mut self.sinks.clipboard;
+        if !c.changed {
+            return None;
+        }
+        c.changed = false;
+        Some(&c.bytes[..c.len as usize])
+    }
+    pub fn clipboard_write_ptr(&self) -> *const u8 {
+        self.sinks.clipboard.bytes.as_ptr()
+    }
+
+    /// -1 unchanged, else the phase (0 unknown .. 4 complete); consumes.
+    pub fn shell_phase(&mut self) -> i32 {
+        let s = &mut self.sinks.shell;
+        if !s.changed {
+            return -1;
+        }
+        s.changed = false;
+        s.phase as i32
+    }
+
+    /// Last command's exit code, NaN when none.
+    pub fn shell_exit_code(&self) -> f64 {
+        self.sinks.shell.exit_code.map_or(f64::NAN, f64::from)
+    }
+
+    /// Bumped on every off-to-on transition of mode 2026.
+    pub fn synchronized_output_generation(&self) -> u32 {
+        self.sinks.sync_generation
+    }
+
+    /// OSC-set default colour override (0 fg, 1 bg, 2 cursor) as 0xRRGGBB, or
+    /// -1 when unset/reset so the host keeps following its theme.
+    pub fn color_override(&self, target: u8) -> i32 {
+        let colors = &self.terminal.colors;
+        let rgb = match target {
+            0 => colors.foreground.override_,
+            1 => colors.background.override_,
+            2 => colors.cursor.override_,
+            _ => None,
+        };
+        rgb.map_or(-1, |c| {
+            (i32::from(c.r) << 16) | (i32::from(c.g) << 8) | i32::from(c.b)
+        })
+    }
+
+    /// Host theme: fg, bg, cursor, then palette 0..15 (0xRRGGBB each).
+    /// Changes defaults only; OSC overrides are kept.
+    pub fn set_theme_colors(&mut self, values: &[u32; 19]) {
+        let to_rgb = |v: u32| RGB {
+            r: (v >> 16) as u8,
+            g: (v >> 8) as u8,
+            b: v as u8,
+        };
+        let gpa = self.terminal.gpa();
+        let colors = &mut self.terminal.colors;
+        colors.foreground.default = Some(to_rgb(values[0]));
+        colors.background.default = Some(to_rgb(values[1]));
+        colors.cursor.default = Some(to_rgb(values[2]));
+        let mut palette = *colors.palette.original();
+        for (i, v) in values[3..].iter().enumerate() {
+            palette[i] = to_rgb(*v);
+        }
+        // Only fails on allocation failure; the defaults above still apply.
+        let _ = colors.palette.change_default(gpa, palette);
+        self.terminal.flags.dirty.palette = true;
+    }
+
+    // -- Prompts and tracked positions -------------------------------------
+
+    pub fn find_prompt(&self, row: u32, direction: i32) -> f64 {
+        positions::find_prompt(&self.terminal, row, direction)
+    }
+
+    /// Track the screen cell (row, col); 0 when out of range or the table is full.
+    pub fn track_position(&mut self, row: u32, col: u32) -> u32 {
+        self.sinks.positions.track(&mut self.terminal, row, col)
+    }
+
+    /// `row * 65536 + col` in screen coordinates, or -1 when invalid.
+    pub fn resolve_position(&self, id: u32) -> f64 {
+        self.sinks.positions.resolve(&self.terminal, id)
+    }
+
+    pub fn release_position(&mut self, id: u32) {
+        self.sinks.positions.release(&self.terminal.screens, id);
     }
 }

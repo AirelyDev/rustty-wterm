@@ -8,7 +8,11 @@ const REQUIRED = ["init", "deinit", "resize", "write", "get_cols", "get_rows", "
   "focus_events", "synchronized_output", "kitty_keyboard_flags",
   "get_scrollback_count", "get_scrollback_discarded_count", "get_scrollback_line", "get_scrollback_line_v2",
   "get_scrollback_grapheme", "get_scrollback_hyperlink", "get_viewport_grapheme", "get_viewport_hyperlink",
-  "get_row_wraps", "get_scrollback_row_wraps"];
+  "get_row_wraps", "get_scrollback_row_wraps",
+  "read_response", "get_title_len", "get_title_ptr", "get_working_directory_len", "get_working_directory_ptr",
+  "get_bell_count", "get_clipboard_write_len", "get_clipboard_write_ptr", "get_shell_phase", "get_shell_exit_code",
+  "synchronized_output_generation", "get_color_override", "set_theme_colors",
+  "find_prompt", "track_position", "resolve_position", "release_position"];
 
 const module = new WebAssembly.Module(readFileSync(process.argv[2]));
 const imports = WebAssembly.Module.imports(module);

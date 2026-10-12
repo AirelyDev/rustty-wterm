@@ -298,3 +298,101 @@ pub extern "C" fn get_row_wraps(ptr: usize, row: u32) -> i32 {
 pub extern "C" fn get_scrollback_row_wraps(ptr: usize, offset: u32) -> i32 {
     core(ptr).map_or(-1, |c| c.scrollback_row_wraps(offset))
 }
+
+// -- Responses and host effects ----------------------------------------------
+
+#[no_mangle]
+pub extern "C" fn read_response(ptr: usize, buf_ptr: usize, buf_len: u32) -> u32 {
+    let Some(c) = core(ptr) else { return 0 };
+    match out_slice(buf_ptr, buf_len) {
+        Some(out) => c.read_response(out),
+        None => 0,
+    }
+}
+
+fn len_or_unchanged(v: Option<&[u8]>) -> i32 {
+    v.map_or(-1, |b| i32::try_from(b.len()).unwrap_or(i32::MAX))
+}
+
+/// -1 = unchanged; reading the length consumes the change.
+#[no_mangle]
+pub extern "C" fn get_title_len(ptr: usize) -> i32 {
+    core(ptr).map_or(-1, |c| len_or_unchanged(c.title()))
+}
+/// Address of the title bytes inside the `Core` (stable while it lives).
+#[no_mangle]
+pub extern "C" fn get_title_ptr(ptr: usize) -> usize {
+    core(ptr).map_or(0, |c| c.title_ptr() as usize)
+}
+#[no_mangle]
+pub extern "C" fn get_working_directory_len(ptr: usize) -> i32 {
+    core(ptr).map_or(-1, |c| len_or_unchanged(c.working_directory()))
+}
+#[no_mangle]
+pub extern "C" fn get_working_directory_ptr(ptr: usize) -> usize {
+    core(ptr).map_or(0, |c| c.working_directory_ptr() as usize)
+}
+#[no_mangle]
+pub extern "C" fn get_bell_count(ptr: usize) -> u32 {
+    core(ptr).map_or(0, |c| c.bell_count())
+}
+#[no_mangle]
+pub extern "C" fn get_clipboard_write_len(ptr: usize) -> i32 {
+    core(ptr).map_or(-1, |c| len_or_unchanged(c.clipboard_write()))
+}
+#[no_mangle]
+pub extern "C" fn get_clipboard_write_ptr(ptr: usize) -> usize {
+    core(ptr).map_or(0, |c| c.clipboard_write_ptr() as usize)
+}
+#[no_mangle]
+pub extern "C" fn get_shell_phase(ptr: usize) -> i32 {
+    core(ptr).map_or(-1, |c| c.shell_phase())
+}
+#[no_mangle]
+pub extern "C" fn get_shell_exit_code(ptr: usize) -> f64 {
+    core(ptr).map_or(f64::NAN, |c| c.shell_exit_code())
+}
+#[no_mangle]
+pub extern "C" fn synchronized_output_generation(ptr: usize) -> u32 {
+    core(ptr).map_or(0, |c| c.synchronized_output_generation())
+}
+#[no_mangle]
+pub extern "C" fn get_color_override(ptr: usize, target: u8) -> i32 {
+    core(ptr).map_or(-1, |c| c.color_override(target))
+}
+/// `values` points at 19 u32s: fg, bg, cursor, palette 0..15.
+#[no_mangle]
+pub extern "C" fn set_theme_colors(ptr: usize, values: *const u32) {
+    let Some(c) = core(ptr) else { return };
+    if values.is_null() {
+        return;
+    }
+    let mut theme = [0u32; 19];
+    for (i, v) in theme.iter_mut().enumerate() {
+        // SAFETY: JS passes a buffer of 19 u32s; read_unaligned tolerates a
+        // byte-aligned `alloc_buffer` address.
+        *v = unsafe { values.add(i).read_unaligned() };
+    }
+    c.set_theme_colors(&theme);
+}
+
+// -- Prompts and tracked positions -------------------------------------------
+
+#[no_mangle]
+pub extern "C" fn find_prompt(ptr: usize, row: u32, direction: i32) -> f64 {
+    core(ptr).map_or(-1.0, |c| c.find_prompt(row, direction))
+}
+#[no_mangle]
+pub extern "C" fn track_position(ptr: usize, row: u32, col: u32) -> u32 {
+    core(ptr).map_or(0, |c| c.track_position(row, col))
+}
+#[no_mangle]
+pub extern "C" fn resolve_position(ptr: usize, id: u32) -> f64 {
+    core(ptr).map_or(-1.0, |c| c.resolve_position(id))
+}
+#[no_mangle]
+pub extern "C" fn release_position(ptr: usize, id: u32) {
+    if let Some(c) = core(ptr) {
+        c.release_position(id);
+    }
+}

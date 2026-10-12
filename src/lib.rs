@@ -3,6 +3,8 @@
 
 pub mod cell;
 mod core;
+mod effects;
+mod positions;
 mod scrollback;
 pub mod sinks;
 pub use crate::core::Core;
