@@ -1,0 +1,25 @@
+[package]
+name = "rustty-wterm"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.93"
+license = "MIT"
+publish = false
+description = "wterm's ghostty-vt wasm ABI, implemented on the Rustty VT engine"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+# Path dependency on the Rustty workspace (read-only). Features mirror what the
+# Zig layer needs: render state and kitty graphics. Everything else is off to
+# keep the wasm small; Task 5 decides whether kitty-graphics survives
+# wasm32-unknown-unknown.
+rustty-vt = { path = "../rustty/crates/rustty-vt", default-features = false, features = ["render-state", "kitty-graphics"] }
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

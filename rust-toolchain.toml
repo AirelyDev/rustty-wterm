@@ -1,0 +1,6 @@
+# Pinned toolchain for the rustty port.
+# Captured from the installed `rustc --version`: 1.93.1 (01f6ddf75 2026-02-11).
+[toolchain]
+channel = "1.93.1"
+components = ["rustfmt", "clippy", "rust-analyzer"]
+profile = "default"
