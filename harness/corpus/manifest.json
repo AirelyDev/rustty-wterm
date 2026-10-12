@@ -1,0 +1,474 @@
+{
+  "entries": [
+    {
+      "name": "plain",
+      "steps": [
+        {
+          "write": "plain.bin"
+        }
+      ]
+    },
+    {
+      "name": "sgr-basic",
+      "steps": [
+        {
+          "write": "sgr-basic.bin"
+        }
+      ]
+    },
+    {
+      "name": "sgr-256-truecolor",
+      "steps": [
+        {
+          "write": "sgr-256-truecolor.bin"
+        }
+      ]
+    },
+    {
+      "name": "underlines",
+      "steps": [
+        {
+          "write": "underlines.bin"
+        }
+      ]
+    },
+    {
+      "name": "wide-cjk",
+      "steps": [
+        {
+          "write": "wide-cjk.bin"
+        }
+      ]
+    },
+    {
+      "name": "emoji-zwj",
+      "steps": [
+        {
+          "write": "emoji-zwj.bin"
+        }
+      ]
+    },
+    {
+      "name": "combining",
+      "steps": [
+        {
+          "write": "combining.bin"
+        }
+      ]
+    },
+    {
+      "name": "wrap-and-reflow",
+      "steps": [
+        {
+          "write": "wrap-and-reflow.bin"
+        },
+        {
+          "resize": [
+            40,
+            24
+          ]
+        },
+        {
+          "resize": [
+            33,
+            10
+          ]
+        },
+        {
+          "resize": [
+            100,
+            24
+          ]
+        }
+      ]
+    },
+    {
+      "name": "scrollback-120",
+      "steps": [
+        {
+          "write": "scrollback-120.bin"
+        }
+      ]
+    },
+    {
+      "name": "scrollback-overflow",
+      "steps": [
+        {
+          "write": "scrollback-overflow.bin"
+        }
+      ],
+      "options": {
+        "scrollbackLimit": 20000
+      }
+    },
+    {
+      "name": "alt-screen",
+      "steps": [
+        {
+          "write": "alt-screen.bin"
+        }
+      ]
+    },
+    {
+      "name": "cursor-moves",
+      "steps": [
+        {
+          "write": "cursor-moves.bin"
+        }
+      ]
+    },
+    {
+      "name": "scroll-region",
+      "steps": [
+        {
+          "write": "scroll-region.bin"
+        }
+      ]
+    },
+    {
+      "name": "tabs",
+      "steps": [
+        {
+          "write": "tabs.bin"
+        }
+      ]
+    },
+    {
+      "name": "osc8",
+      "steps": [
+        {
+          "write": "osc8.bin"
+        }
+      ]
+    },
+    {
+      "name": "osc-title-pwd",
+      "steps": [
+        {
+          "write": "osc-title-pwd.bin"
+        }
+      ]
+    },
+    {
+      "name": "osc-colors",
+      "steps": [
+        {
+          "write": "osc-colors.bin"
+        }
+      ]
+    },
+    {
+      "name": "queries",
+      "steps": [
+        {
+          "write": "queries.bin"
+        }
+      ]
+    },
+    {
+      "name": "queries-ansi-modes",
+      "steps": [
+        {
+          "write": "queries-ansi-modes.bin"
+        }
+      ]
+    },
+    {
+      "name": "mouse-modes",
+      "steps": [
+        {
+          "write": "mouse-modes.bin"
+        }
+      ]
+    },
+    {
+      "name": "bracketed-paste-focus-sync",
+      "steps": [
+        {
+          "write": "bracketed-paste-focus-sync.bin"
+        }
+      ]
+    },
+    {
+      "name": "osc52-valid",
+      "steps": [
+        {
+          "write": "osc52-valid.bin"
+        }
+      ]
+    },
+    {
+      "name": "osc52-invalid",
+      "steps": [
+        {
+          "write": "osc52-invalid.bin"
+        }
+      ]
+    },
+    {
+      "name": "osc52-query",
+      "steps": [
+        {
+          "write": "osc52-query.bin"
+        }
+      ]
+    },
+    {
+      "name": "osc52-oversize",
+      "steps": [
+        {
+          "write": "osc52-oversize.bin"
+        }
+      ]
+    },
+    {
+      "name": "osc52-selector",
+      "steps": [
+        {
+          "write": "osc52-selector.bin"
+        }
+      ]
+    },
+    {
+      "name": "osc52-unpadded",
+      "steps": [
+        {
+          "write": "osc52-unpadded.bin"
+        }
+      ]
+    },
+    {
+      "name": "bell",
+      "steps": [
+        {
+          "write": "bell.bin"
+        }
+      ]
+    },
+    {
+      "name": "osc133",
+      "steps": [
+        {
+          "write": "osc133.bin"
+        }
+      ]
+    },
+    {
+      "name": "decscusr",
+      "steps": [
+        {
+          "write": "decscusr.bin"
+        }
+      ]
+    },
+    {
+      "name": "prompt-delete-lines",
+      "steps": [
+        {
+          "write": "prompt-delete-lines.bin"
+        }
+      ]
+    },
+    {
+      "name": "kitty-image-rgb",
+      "steps": [
+        {
+          "write": "kitty-image-rgb.bin"
+        }
+      ],
+      "skip": "Task 5 outcome B: the Rust build has no kitty graphics; image replies and state exist only in the Zig build"
+    },
+    {
+      "name": "tracked-alt-screen",
+      "steps": [
+        {
+          "write": "tracked-alt-screen-0.bin"
+        },
+        {
+          "track": [
+            0,
+            3
+          ]
+        },
+        {
+          "track": [
+            1,
+            2
+          ]
+        },
+        {
+          "write": "tracked-alt-screen-1.bin"
+        }
+      ]
+    },
+    {
+      "name": "chunked-split",
+      "steps": [
+        {
+          "write": "chunked-split.bin"
+        }
+      ],
+      "chunkings": "splits"
+    },
+    {
+      "name": "random-fuzz-1",
+      "steps": [
+        {
+          "write": "random-fuzz-1.bin"
+        }
+      ]
+    },
+    {
+      "name": "random-fuzz-2",
+      "steps": [
+        {
+          "write": "random-fuzz-2.bin"
+        }
+      ]
+    },
+    {
+      "name": "random-fuzz-3",
+      "steps": [
+        {
+          "write": "random-fuzz-3.bin"
+        }
+      ]
+    },
+    {
+      "name": "random-fuzz-4",
+      "steps": [
+        {
+          "write": "random-fuzz-4.bin"
+        }
+      ]
+    },
+    {
+      "name": "random-fuzz-5",
+      "steps": [
+        {
+          "write": "random-fuzz-5.bin"
+        }
+      ]
+    },
+    {
+      "name": "random-fuzz-6",
+      "steps": [
+        {
+          "write": "random-fuzz-6.bin"
+        }
+      ]
+    },
+    {
+      "name": "random-fuzz-7",
+      "steps": [
+        {
+          "write": "random-fuzz-7.bin"
+        }
+      ]
+    },
+    {
+      "name": "random-fuzz-8",
+      "steps": [
+        {
+          "write": "random-fuzz-8.bin"
+        }
+      ]
+    },
+    {
+      "name": "random-fuzz-9",
+      "steps": [
+        {
+          "write": "random-fuzz-9.bin"
+        }
+      ]
+    },
+    {
+      "name": "random-fuzz-10",
+      "steps": [
+        {
+          "write": "random-fuzz-10.bin"
+        }
+      ]
+    },
+    {
+      "name": "random-fuzz-11",
+      "steps": [
+        {
+          "write": "random-fuzz-11.bin"
+        }
+      ]
+    },
+    {
+      "name": "random-fuzz-12",
+      "steps": [
+        {
+          "write": "random-fuzz-12.bin"
+        }
+      ]
+    },
+    {
+      "name": "random-fuzz-13",
+      "steps": [
+        {
+          "write": "random-fuzz-13.bin"
+        }
+      ]
+    },
+    {
+      "name": "random-fuzz-14",
+      "steps": [
+        {
+          "write": "random-fuzz-14.bin"
+        }
+      ]
+    },
+    {
+      "name": "random-fuzz-15",
+      "steps": [
+        {
+          "write": "random-fuzz-15.bin"
+        }
+      ]
+    },
+    {
+      "name": "random-fuzz-16",
+      "steps": [
+        {
+          "write": "random-fuzz-16.bin"
+        }
+      ]
+    },
+    {
+      "name": "random-fuzz-17",
+      "steps": [
+        {
+          "write": "random-fuzz-17.bin"
+        }
+      ]
+    },
+    {
+      "name": "random-fuzz-18",
+      "steps": [
+        {
+          "write": "random-fuzz-18.bin"
+        }
+      ]
+    },
+    {
+      "name": "random-fuzz-19",
+      "steps": [
+        {
+          "write": "random-fuzz-19.bin"
+        }
+      ]
+    },
+    {
+      "name": "random-fuzz-20",
+      "steps": [
+        {
+          "write": "random-fuzz-20.bin"
+        }
+      ]
+    }
+  ]
+}
