@@ -97,17 +97,16 @@ them `GhosttyCore.getGraphicsState()` reports no images (see "Kitty graphics").
 
 | What | Pin | How it is fixed |
 |---|---|---|
-| `rustty-vt` | Rustty commit `3e43a1d18119e29ce99092ee33b1c7b134ad7834` | path dependency `../rustty/crates/rustty-vt` (read-only); `git -C ../rustty rev-parse HEAD` and a clean `git status --short crates/rustty-vt` there when recorded |
+| `rustty-vt` | Rustty commit `3e43a1d18119e29ce99092ee33b1c7b134ad7834` | git dependency on the private `AirelyDev/rustty` repository, pinned by `rev` in `Cargo.toml` and recorded in `Cargo.lock`; fetching needs SSH access to that repository (`.cargo/config.toml` makes Cargo use the `git` CLI so your ssh-agent and keys apply) |
 | wterm reference | `488e9a7344e812e35a951f803618d7767cc4be5b` | the `wasm_api.zig` lines above; test expectations |
 | `@wterm/*` | 0.5.4 | exact versions in `harness/package.json` (the website pins the same) |
 | Ghostty oracle for Rustty | `246f70287` | Rustty's current reference commit (`.port/` notes in the Rustty repository) |
 | Ghostty inside wterm's Zig build | v1.3.1 | per the harness findings below |
 | Rust toolchain | 1.93.1 | `rust-toolchain.toml` |
 
-The path dependency is not a lock: `Cargo.lock` does not record a commit for
-it, so the `rustty-vt` row is only as meaningful as the state of the sibling
-checkout. Rebuild against a different Rustty checkout and the harness results
-below may change.
+The dependency is fixed by `rev` in `Cargo.toml` and `Cargo.lock`, so a clean
+build always uses that Rustty commit. Moving the `rev` can change the harness
+results below; rerun `tools/check.sh` and update this table when you do.
 
 ## Build
 

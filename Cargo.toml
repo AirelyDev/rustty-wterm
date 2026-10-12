@@ -19,7 +19,7 @@ crate-type = ["cdylib", "rlib"]
 # wasm32-unknown-unknown included (no timestamps, no wuffs PNG/zlib there), so
 # the shipped wasm ignores every `ESC _ G` command whatever the feature says.
 # Leaving it off on the host too keeps `cargo test` describing the same engine.
-rustty-vt = { path = "../rustty/crates/rustty-vt", default-features = false, features = ["render-state"] }
+rustty-vt = { git = "ssh://git@github.com/AirelyDev/rustty.git", rev = "3e43a1d18119e29ce99092ee33b1c7b134ad7834", default-features = false, features = ["render-state"] }
 
 [profile.release]
 opt-level = "s"

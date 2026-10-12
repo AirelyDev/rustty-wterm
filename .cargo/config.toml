@@ -1,0 +1,4 @@
+# The rustty dependency lives in a private repository. Fetch it with the git CLI
+# so the usual ssh-agent / credential setup applies.
+[net]
+git-fetch-with-cli = true
