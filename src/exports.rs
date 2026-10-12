@@ -84,3 +84,108 @@ pub extern "C" fn free_buffer(ptr: usize, len: u32) {
         });
     }
 }
+
+// -- Viewport, dirty tracking, cursor, modes -------------------------------
+
+#[no_mangle]
+pub extern "C" fn update(ptr: usize) {
+    if let Some(c) = core(ptr) {
+        c.update();
+    }
+}
+
+fn viewport_into(ptr: usize, buf: *mut u8, cell_bytes: usize) -> u32 {
+    let Some(c) = core(ptr) else { return 0 };
+    if buf.is_null() {
+        return 0;
+    }
+    let n = (c.cols() as usize) * (c.rows() as usize) * cell_bytes;
+    // SAFETY: JS allocated cols*rows*cell_bytes bytes via alloc_buffer for this call.
+    c.viewport(
+        unsafe { core::slice::from_raw_parts_mut(buf, n) },
+        cell_bytes,
+    )
+}
+
+#[no_mangle]
+pub extern "C" fn get_viewport(ptr: usize, buf: *mut u8) -> u32 {
+    viewport_into(ptr, buf, crate::cell::CELL_BYTES)
+}
+
+#[no_mangle]
+pub extern "C" fn get_viewport_v2(ptr: usize, buf: *mut u8) -> u32 {
+    viewport_into(ptr, buf, crate::cell::CELL_BYTES_V2)
+}
+
+#[no_mangle]
+pub extern "C" fn is_dirty(ptr: usize) -> u32 {
+    core(ptr).map_or(0, |c| c.is_dirty())
+}
+#[no_mangle]
+pub extern "C" fn is_dirty_row(ptr: usize, row: u16) -> u32 {
+    core(ptr).map_or(0, |c| u32::from(c.is_dirty_row(row)))
+}
+#[no_mangle]
+pub extern "C" fn clear_dirty(ptr: usize) {
+    if let Some(c) = core(ptr) {
+        c.clear_dirty();
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn get_cursor_row(ptr: usize) -> u32 {
+    core(ptr).map_or(0, |c| c.cursor().row)
+}
+#[no_mangle]
+pub extern "C" fn get_cursor_col(ptr: usize) -> u32 {
+    core(ptr).map_or(0, |c| c.cursor().col)
+}
+#[no_mangle]
+pub extern "C" fn get_cursor_visible(ptr: usize) -> u32 {
+    core(ptr).map_or(0, |c| u32::from(c.cursor().visible))
+}
+#[no_mangle]
+pub extern "C" fn get_cursor_shape(ptr: usize) -> u32 {
+    core(ptr).map_or(0, |c| c.cursor().shape)
+}
+#[no_mangle]
+pub extern "C" fn get_cursor_blinking(ptr: usize) -> u32 {
+    core(ptr).map_or(0, |c| u32::from(c.cursor().blinking))
+}
+
+#[no_mangle]
+pub extern "C" fn cursor_keys_app(ptr: usize) -> u32 {
+    core(ptr).map_or(0, |c| u32::from(c.cursor_keys_app()))
+}
+#[no_mangle]
+pub extern "C" fn bracketed_paste(ptr: usize) -> u32 {
+    core(ptr).map_or(0, |c| u32::from(c.bracketed_paste()))
+}
+#[no_mangle]
+pub extern "C" fn using_alt_screen(ptr: usize) -> u32 {
+    core(ptr).map_or(0, |c| u32::from(c.using_alt_screen()))
+}
+#[no_mangle]
+pub extern "C" fn mouse_tracking(ptr: usize) -> u32 {
+    core(ptr).map_or(0, |c| c.mouse_tracking())
+}
+#[no_mangle]
+pub extern "C" fn mouse_sgr(ptr: usize) -> u32 {
+    core(ptr).map_or(0, |c| u32::from(c.mouse_sgr()))
+}
+#[no_mangle]
+pub extern "C" fn mouse_encoding(ptr: usize) -> u32 {
+    core(ptr).map_or(0, |c| c.mouse_encoding())
+}
+#[no_mangle]
+pub extern "C" fn focus_events(ptr: usize) -> u32 {
+    core(ptr).map_or(0, |c| u32::from(c.focus_events()))
+}
+#[no_mangle]
+pub extern "C" fn synchronized_output(ptr: usize) -> u32 {
+    core(ptr).map_or(0, |c| u32::from(c.synchronized_output()))
+}
+#[no_mangle]
+pub extern "C" fn kitty_keyboard_flags(ptr: usize) -> u32 {
+    core(ptr).map_or(0, |c| c.kitty_keyboard_flags())
+}
