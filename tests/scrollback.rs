@@ -108,6 +108,54 @@ fn discarded_rows_count_history_pruned_from_the_oldest_end() {
     assert!(c.scrollback_discarded() > 0);
 }
 
+/// Every row ever created is on screen, in history, or discarded, whether the
+/// lines arrive one write at a time or in a single write (Task 6 harness).
+#[test]
+fn discarded_rows_account_for_every_pruned_row() {
+    for single_write in [false, true] {
+        let mut c = Core::new(80, 24, 1000, 0, 0, 0).unwrap();
+        let text: String = (0..2000).map(|i| format!("l {i}\r\n")).collect();
+        if single_write {
+            c.write(text.as_bytes());
+        } else {
+            fill(&mut c, 2000);
+        }
+        let disc = c.scrollback_discarded();
+        assert!(disc > 0);
+        assert_eq!(
+            c.scrollback_count() + 24 + disc,
+            2001,
+            "single_write={single_write}"
+        );
+    }
+}
+
+/// Region scrolls renew page generations without pruning anything (Task 6
+/// harness: `scroll-region` reported 144 discarded rows, Zig 0).
+#[test]
+fn region_scrolls_discard_nothing() {
+    let mut c = Core::new(80, 24, 1000, 0, 0, 0).unwrap();
+    c.write(b"a\r\nb\x1b[3;6r\x1b[6;1H\x1bDind\x1b[2S\x1b[1T\x1bM");
+    assert_eq!(c.scrollback_discarded(), 0);
+}
+
+/// ED 3 erases history without discarding (the Zig counter is untouched);
+/// RIS resets the page list and with it the counter.
+#[test]
+fn erase_history_keeps_and_full_reset_clears_the_discarded_count() {
+    let mut c = Core::new(80, 24, 1000, 0, 0, 0).unwrap();
+    fill(&mut c, 1300);
+    let disc = c.scrollback_discarded();
+    assert!(disc > 0);
+    c.write(b"\x1b[3J");
+    assert_eq!(c.scrollback_count(), 0);
+    assert_eq!(c.scrollback_discarded(), disc);
+    fill(&mut c, 10);
+    assert_eq!(c.scrollback_discarded(), disc);
+    c.write(b"\x1bc");
+    assert_eq!(c.scrollback_discarded(), 0);
+}
+
 #[test]
 fn history_hyperlinks_and_graphemes_survive_scrolling() {
     let mut c = Core::new(20, 3, 100_000, 0, 0, 0).unwrap();

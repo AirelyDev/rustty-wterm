@@ -40,19 +40,44 @@ pub struct Core {
     sinks: Box<Sinks>,
 }
 
-/// `PageList.discardedRows` is a counter the wterm Zig patch adds to ghostty;
-/// `rustty-vt` has no such counter and is read-only here, so it is derived from
-/// page bookkeeping at each write: pages that existed before and are gone now
-/// were pruned from the oldest end (`pages_before + serials_issued -
-/// pages_after`), each worth a full page of rows. Exact for whole-page prunes
-/// (the only kind `grow` performs); pages both created and pruned inside one
-/// write are still counted because `page_serial` advances per allocation.
-#[derive(Default)]
+/// `PageList.discardedRows` is a counter the wterm Zig patch adds to ghostty:
+/// rows of pages that `grow` pruned from the oldest end, zeroed by
+/// `PageList.reset`. `rustty-vt` has no such counter and is read-only here, so
+/// it is observed from outside:
+///
+/// * a tracked pin sits on the primary screen's first row. A prune marks
+///   every pin on the pruned page as garbage (and moves it to the new first
+///   page's top-left); erasing history (ED 3), capacity changes and region
+///   scrolls move pins without marking them, so a garbage pin means a prune.
+/// * the pruned page's rows are the first page's rows sampled before the
+///   prune (history pages are complete, so they do not change meanwhile).
+/// * `Core::write` feeds the stream in pieces of half a page of bytes, so at
+///   most one prune happens between samples: a second prune needs a whole
+///   new page of rows, and each byte grows the page list by at most one row
+///   (except REP and ED 2's scroll-clear; see README "Known gaps").
+/// * `page_serial_epoch` advances only in `PageList.reset` (RIS), which is
+///   where the Zig counter returns to zero.
 struct DiscardTracker {
-    serial: u64,
-    pages: usize,
+    /// Tracked pin in the primary screen's page list (null until attached).
+    pin: *mut rustty_vt::pagelist::Pin,
+    screen: *mut rustty_vt::screen::Screen,
+    generation: usize,
+    epoch: u64,
+    first_rows: usize,
     discarded: u32,
-    primary: bool,
+}
+
+impl Default for DiscardTracker {
+    fn default() -> Self {
+        DiscardTracker {
+            pin: core::ptr::null_mut(),
+            screen: core::ptr::null_mut(),
+            generation: 0,
+            epoch: 0,
+            first_rows: 0,
+            discarded: 0,
+        }
+    }
 }
 
 fn rgb(v: u32) -> DynamicRGB {
@@ -113,7 +138,7 @@ impl Core {
             sinks: Box::default(),
         });
         effects::install(&mut core.stream.handler.effects);
-        core.discard_rebaseline();
+        core.discard_sample();
         Some(core)
     }
 
@@ -125,7 +150,13 @@ impl Core {
             // is a disjoint field.
             let sinks: *mut Sinks = &mut *self.sinks;
             let _active = ActiveGuard::new(sinks);
-            self.stream.next_slice(data);
+            let mut rest = data;
+            while !rest.is_empty() {
+                let (piece, tail) = rest.split_at(rest.len().min(self.discard_piece_len()));
+                self.stream.next_slice(piece);
+                self.discard_sample();
+                rest = tail;
+            }
         }
         // The Zig layer clears tracked positions whenever an action changes
         // the active screen. rustty-vt has no screen-switch effect, so this
@@ -133,7 +164,6 @@ impl Core {
         if self.screen_identity() != screen {
             self.sinks.positions.clear(&self.terminal.screens);
         }
-        self.discard_sample();
     }
 
     fn screen_identity(&self) -> (*mut rustty_vt::screen::Screen, usize) {
@@ -141,57 +171,77 @@ impl Core {
         (s.active, s.generation(s.active_key))
     }
 
-    fn primary_pages(&self) -> Option<(u64, usize, usize)> {
-        let screen = self.terminal.screens.active;
-        if screen.is_null()
-            || self.terminal.screens.active_key != rustty_vt::screen_set::Key::Primary
+    /// The primary screen's page list, if the tracker's pin still lives in it.
+    fn discard_pages(&mut self) -> Option<&mut rustty_vt::pagelist::PageList> {
+        use rustty_vt::screen_set::Key;
+        let screens = &self.terminal.screens;
+        let screen = screens.get(Key::Primary)?;
+        if self.discard.pin.is_null()
+            || screen != self.discard.screen
+            || screens.generation(Key::Primary) != self.discard.generation
         {
-            return None;
+            // First use, or the primary screen was replaced (its pins went
+            // with it): start over on the new page list, whose Zig counter
+            // starts at zero.
+            // SAFETY: `screen` is the set's live primary screen, owned by
+            // `self.terminal`, which we borrow mutably through `self`.
+            let pages = unsafe { &mut (*screen).pages };
+            let top = pages.pin(rustty_vt::point::Point::Screen(Default::default()))?;
+            let pin = pages.track_pin(top).ok()?;
+            self.discard = DiscardTracker {
+                pin,
+                screen,
+                generation: screens.generation(Key::Primary),
+                epoch: pages.page_serial_epoch,
+                first_rows: 0,
+                discarded: 0,
+            };
         }
-        // SAFETY: `active` points at a screen owned by `terminal.screens`.
-        let pages = unsafe { &(*screen).pages };
-        let first = pages.pages.first;
-        let first_rows = if first.is_null() {
-            0
-        } else {
-            // SAFETY: non-null list node; reads metadata only.
-            unsafe { rustty_vt::pagelist::Node::rows(first) as usize }
-        };
-        Some((pages.page_serial, pages.total_pages(), first_rows))
+        // SAFETY: as above; the check proved `screen` is still the screen the
+        // pin was tracked in.
+        Some(unsafe { &mut (*screen).pages })
     }
 
-    fn discard_rebaseline(&mut self) {
-        match self.primary_pages() {
-            Some((serial, pages, _)) => {
-                self.discard.serial = serial;
-                self.discard.pages = pages;
-                self.discard.primary = true;
-            }
-            None => self.discard.primary = false,
+    /// Bytes the stream may consume before the next `discard_sample`.
+    fn discard_piece_len(&mut self) -> usize {
+        let Some(pages) = self.discard_pages() else {
+            return usize::MAX;
+        };
+        let last = pages.pages.last;
+        if last.is_null() {
+            return usize::MAX;
         }
+        // SAFETY: non-null node of the live list; reads metadata only.
+        let cap = unsafe { rustty_vt::pagelist::Node::capacity(last).rows } as usize;
+        (cap / 2).max(1)
     }
 
     fn discard_sample(&mut self) {
-        let Some((serial, pages, first_rows)) = self.primary_pages() else {
-            self.discard.primary = false;
+        let Some(pages) = self.discard_pages() else {
             return;
         };
-        if !self.discard.primary || serial < self.discard.serial {
-            // Returned from the alt screen, or the list was rebuilt.
-            self.discard_rebaseline();
-            return;
+        let (epoch, first) = (pages.page_serial_epoch, pages.pages.first);
+        let pin = self.discard.pin;
+        // SAFETY: `pin` is tracked in `pages` (checked by `discard_pages`);
+        // tracked pins stay allocated until untracked.
+        let garbage = unsafe { (*pin).garbage };
+        if epoch != self.discard.epoch {
+            // PageList.reset (RIS): the Zig counter restarts at zero.
+            self.discard.epoch = epoch;
+            self.discard.discarded = 0;
+        } else if garbage {
+            let rows = u32::try_from(self.discard.first_rows).unwrap_or(u32::MAX);
+            self.discard.discarded = self.discard.discarded.saturating_add(rows);
         }
-        let issued = (serial - self.discard.serial) as usize;
-        let pruned = (self.discard.pages + issued).saturating_sub(pages);
-        if pruned > 0 {
-            let rows = pruned.saturating_mul(first_rows);
-            self.discard.discarded = self
-                .discard
-                .discarded
-                .saturating_add(u32::try_from(rows).unwrap_or(u32::MAX));
-        }
-        self.discard.serial = serial;
-        self.discard.pages = pages;
+        // SAFETY: as above; a garbage pin already sits on the first page's
+        // top-left, so clearing the flag re-arms it.
+        unsafe { (*pin).garbage = false };
+        self.discard.first_rows = if first.is_null() {
+            0
+        } else {
+            // SAFETY: non-null node of the live list; reads metadata only.
+            unsafe { rustty_vt::pagelist::Node::rows(first) as usize }
+        };
     }
 
     pub fn resize(&mut self, cols: u16, rows: u16) {
@@ -213,7 +263,7 @@ impl Core {
             self.cols = cols;
             self.rows = rows;
         }
-        self.discard_rebaseline();
+        self.discard_sample();
     }
 
     pub fn cols(&self) -> u32 {
@@ -375,9 +425,10 @@ impl Core {
         scrollback::count(&self.terminal)
     }
 
-    /// Rows pruned from the oldest end of the primary screen's history.
+    /// Rows pruned from the oldest end of the active screen's history (the
+    /// alternate screen keeps none).
     pub fn scrollback_discarded(&self) -> u32 {
-        if self.discard.primary {
+        if self.terminal.screens.active_key == rustty_vt::screen_set::Key::Primary {
             self.discard.discarded
         } else {
             0
