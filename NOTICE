@@ -1,0 +1,19 @@
+rustty-wterm
+
+ABI and test expectations
+  This crate implements the `ghostty-vt.wasm` ABI of wterm
+  (https://github.com/vercel-labs/wterm, Copyright 2025 Vercel, Inc.,
+  Apache License 2.0), commit
+  488e9a7344e812e35a951f803618d7767cc4be5b. The export surface, byte layouts,
+  quirks and test expectations come from packages/@wterm/ghostty/zig/src/
+  wasm_api.zig and the @wterm/* 0.5.4 packages. Several modules are close
+  ports of functions in that file (see README, "Code provenance"). The
+  differential harness (harness/) runs wterm's unmodified JavaScript and its
+  ghostty-vt.wasm; both are Apache-2.0 and are installed from npm, not
+  vendored. The Apache-2.0 text is in @wterm/ghostty's LICENSE.
+
+Behavioural oracle
+  The behaviour is that of Ghostty (https://github.com/ghostty-org/ghostty,
+  Copyright (c) 2024 Mitchell Hashimoto, Ghostty contributors, MIT) as
+  reproduced by rustty-vt from the Rustty project, which this crate depends on
+  by path and does not vendor. See Rustty's LICENSE and NOTICE.
