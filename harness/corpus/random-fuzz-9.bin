@@ -1,30 +1,33 @@
-primary
-[?1049h[2J[Halt text[5;5Hmid[?1049lback
+[5;10HA[2AB[3BC[4CD[2DE7[1;1Hsaved8F[10;1H0123456789[10;3H[4X[12;20H[s[H[u![3G|[7d^[K[1K[2Kx
 [2Mé ạ̀ ñ x⃝
-[3P[?6l[?7ha	b	c
-H[3g	[20GH	x	 y[0g[2I*[1Z+
+[3P[?6l[?7h]8;;https://example.com\link]8;;\ ]8;id=a1;https://example.com/aidlink]8;; ]8;id=a1;https://example.com/asame]8;;
 
-family:👨‍👩‍👧‍👦 flags:🇫🇷🇯🇵 skin:👍🏽 heart:❤️ text:☺︎
-[J[?6h[r]8;;https://example.com\link]8;;\ ]8;id=a1;https://example.com/aidlink]8;; ]8;id=a1;https://example.com/asame]8;;
-]8;;https://example.com\link]8;;\ ]8;id=a1;https://example.com/aidlink]8;; ]8;id=a1;https://example.com/asame]8;;
-[?6l[J[?2004h[?1004h[?2026h[?1h[?1049l#8[2M[c[5n[6n[?25$p[?2004$p[?ucprimary
+é ạ̀ ñ x⃝
+[H[?7h[2;20r]0;first title]2;Final ✓ title\]7;file://host/home/user/dir
+]0;first title]2;Final ✓ title\]7;file://host/home/user/dir
+[?6l[Jding
+[?1049h#8[2M]10;#112233]11;rgb:44/55/66]12;#778899\x
+cprimary
 [?1049h[2J[Halt text[5;5Hmid[?1049lback
-[?7h[?1000h[?1002h[?1003h[?1006h[?1016h[38;5;0mx[48;5;255my[38;5;17mx[48;5;238my[38;5;34mx[48;5;221my[38;5;51mx[48;5;204my[38;5;68mx[48;5;187my[38;5;85mx[48;5;170my[38;5;102mx[48;5;153my[38;5;119mx[48;5;136my[38;5;136mx[48;5;119my[38;5;153mx[48;5;102my[38;5;170mx[48;5;85my[38;5;187mx[48;5;68my[38;5;204mx[48;5;51my[38;5;221mx[48;5;34my[38;5;238mx[48;5;17my[38;5;255mx[48;5;0my[0m
+[?7l[?1000h[?1002h[?1003h[?1006h[?1016h[38;5;0mx[48;5;255my[38;5;17mx[48;5;238my[38;5;34mx[48;5;221my[38;5;51mx[48;5;204my[38;5;68mx[48;5;187my[38;5;85mx[48;5;170my[38;5;102mx[48;5;153my[38;5;119mx[48;5;136my[38;5;136mx[48;5;119my[38;5;153mx[48;5;102my[38;5;170mx[48;5;85my[38;5;187mx[48;5;68my[38;5;204mx[48;5;51my[38;5;221mx[48;5;34my[38;5;238mx[48;5;17my[38;5;255mx[48;5;0my[0m
 [38;2;255;0;0mR[38;2;0;255;0mG[38;2;0;0;255mB[48;2;10;20;30mbg[38:2::1:2:3mcolon[39;49mdef[0m
 c[5;10HA[2AB[3BC[4CD[2DE7[1;1Hsaved8F[10;1H0123456789[10;3H[4X[12;20H[s[H[u![3G|[7d^[K[1K[2Kx
-[?1049hfz 0000
+fz 0000
 fz 0001
 fz 0002
 fz 0003
 fz 0004
+]52;c;ZnV6eg==[4:0mu0[4:1mu1[4:2mu2[4:3mu3[4:4mu4[4:5mu5[4m[58;2;255;128;0morange[58;5;196mpal[59mnone[21mdouble[24moff[0m
+[2L[?6h[5;10HA[2AB[3BC[4CD[2DE7[1;1Hsaved8F[10;1H0123456789[10;3H[4X[12;20H[s[H[u![3G|[7d^[K[1K[2Kx
 [4:0mu0[4:1mu1[4:2mu2[4:3mu3[4:4mu4[4:5mu5[4m[58;2;255;128;0morange[58;5;196mpal[59mnone[21mdouble[24moff[0m
-[2L[?6hprimary
-[?1049h[2J[Halt text[5;5Hmid[?1049lback
-[4:0mu0[4:1mu1[4:2mu2[4:3mu3[4:4mu4[4:5mu5[4m[58;2;255;128;0morange[58;5;196mpal[59mnone[21mdouble[24moff[0m
-]52;c;ZnV6eg==]0;first title]2;Final ✓ title\]7;file://host/home/user/dir
-[?7l]0;first title]2;Final ✓ title\]7;file://host/home/user/dir
-[?1049l[2;20rThe quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. END
+[>3u[=5;2u[>1u[<u]4;1;rgb:ff/00/00]4;1;?[31mred[0m]10;#112233]11;rgb:44/55/66]12;#778899]10;?]11;?]12;?]104;1]110]111]112]10;?\
+[J]0;first title]2;Final ✓ title\]7;file://host/home/user/dir
+[?1049l[?1049lThe quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. END
 short
 The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. END
-[?1049h]4;1;rgb:ff/00/00]4;1;?[31mred[0m]10;#112233]11;rgb:44/55/66]12;#778899]10;?]11;?]12;?]104;1]110]111]112]10;?\
-[?1049l[5@[2;20r[H
+fz 0000
+fz 0001
+fz 0002
+fz 0003
+fz 0004
+[?1000h[?1002h[?1003h[?1006h[?1016h[?1049h[5@[2;20r[r

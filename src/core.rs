@@ -54,7 +54,8 @@ pub struct Core {
 /// * `Core::write` feeds the stream in pieces of half a page of bytes, so at
 ///   most one prune happens between samples: a second prune needs a whole
 ///   new page of rows, and each byte grows the page list by at most one row
-///   (except REP and ED 2's scroll-clear; see README "Known gaps").
+///   (except REP, SU with a large count and ED 2's scroll-clear; see
+///   README "Known gaps").
 /// * `page_serial_epoch` advances only in `PageList.reset` (RIS), which is
 ///   where the Zig counter returns to zero.
 struct DiscardTracker {

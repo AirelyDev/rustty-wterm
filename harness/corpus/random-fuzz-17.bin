@@ -1,54 +1,47 @@
-[?7hprimary
-[?1049h[2J[Halt text[5;5Hmid[?1049lback
-[?1049hThe quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. END
+[?7l[5;10HA[2AB[3BC[4CD[2DE7[1;1Hsaved8F[10;1H0123456789[10;3H[4X[12;20H[s[H[u![3G|[7d^[K[1K[2Kx
+fz 0000
+fz 0001
+fz 0002
+fz 0003
+fz 0004
+The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. END
 short
 The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. END
-[4:0mu0[4:1mu1[4:2mu2[4:3mu3[4:4mu4[4:5mu5[4m[58;2;255;128;0morange[58;5;196mpal[59mnone[21mdouble[24moff[0m
-[4l]8;;https://example.com\link]8;;\ ]8;id=a1;https://example.com/aidlink]8;; ]8;id=a1;https://example.com/asame]8;;
-[?1049la	b	c
-H[3g	[20GH	x	 y[0g[2I*[1Z+
-[?7h[5@]0;first title]2;Final ✓ title\]7;file://host/home/user/dir
-[2J[Hr 0000
-r 0001
-r 0002
-r 0003
-r 0004
-r 0005
-r 0006
-r 0007
-[3;6r[6;1HDindDind2[3;1HMriMri2[2S[1T[r[20;1Hdoneprimary
-[?1049h[2J[Halt text[5;5Hmid[?1049lback
-[J[4h]0;first title]2;Final ✓ title\]7;file://host/home/user/dir
-]52;c;ZnV6eg==[?6h[?7h[2;20r[H[2;20r]133;A$ ]133;Bls]133;C
-out
-]133;D;0]133;A$ ]133;Bfalse]133;C
-]133;D;1]133;A$ [38;5;0mx[48;5;255my[38;5;17mx[48;5;238my[38;5;34mx[48;5;221my[38;5;51mx[48;5;204my[38;5;68mx[48;5;187my[38;5;85mx[48;5;170my[38;5;102mx[48;5;153my[38;5;119mx[48;5;136my[38;5;136mx[48;5;119my[38;5;153mx[48;5;102my[38;5;170mx[48;5;85my[38;5;187mx[48;5;68my[38;5;204mx[48;5;51my[38;5;221mx[48;5;34my[38;5;238mx[48;5;17my[38;5;255mx[48;5;0my[0m
-[38;2;255;0;0mR[38;2;0;255;0mG[38;2;0;0;255mB[48;2;10;20;30mbg[38:2::1:2:3mcolon[39;49mdef[0m
-[38;5;0mx[48;5;255my[38;5;17mx[48;5;238my[38;5;34mx[48;5;221my[38;5;51mx[48;5;204my[38;5;68mx[48;5;187my[38;5;85mx[48;5;170my[38;5;102mx[48;5;153my[38;5;119mx[48;5;136my[38;5;136mx[48;5;119my[38;5;153mx[48;5;102my[38;5;170mx[48;5;85my[38;5;187mx[48;5;68my[38;5;204mx[48;5;51my[38;5;221mx[48;5;34my[38;5;238mx[48;5;17my[38;5;255mx[48;5;0my[0m
-[38;2;255;0;0mR[38;2;0;255;0mG[38;2;0;0;255mB[48;2;10;20;30mbg[38:2::1:2:3mcolon[39;49mdef[0m
-c]4;1;rgb:ff/00/00]4;1;?[31mred[0m]10;#112233]11;rgb:44/55/66]12;#778899]10;?]11;?]12;?]104;1]110]111]112]10;?\
-[1 q[2 q[3 q[4 q[5 q[6 q[?25l[?25h[3 q[J[H[38;5;0mx[48;5;255my[38;5;17mx[48;5;238my[38;5;34mx[48;5;221my[38;5;51mx[48;5;204my[38;5;68mx[48;5;187my[38;5;85mx[48;5;170my[38;5;102mx[48;5;153my[38;5;119mx[48;5;136my[38;5;136mx[48;5;119my[38;5;153mx[48;5;102my[38;5;170mx[48;5;85my[38;5;187mx[48;5;68my[38;5;204mx[48;5;51my[38;5;221mx[48;5;34my[38;5;238mx[48;5;17my[38;5;255mx[48;5;0my[0m
-[38;2;255;0;0mR[38;2;0;255;0mG[38;2;0;0;255mB[48;2;10;20;30mbg[38:2::1:2:3mcolon[39;49mdef[0m
-[2J[Hr 0000
-r 0001
-r 0002
-r 0003
-r 0004
-r 0005
-r 0006
-r 0007
-[3;6r[6;1HDindDind2[3;1HMriMri2[2S[1T[r[20;1Hdone[3P漢字テスト 한국어 中文
-ab漢cd
-字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字
-]4;1;rgb:ff/00/00]4;1;?[31mred[0m]10;#112233]11;rgb:44/55/66]12;#778899]10;?]11;?]12;?]104;1]110]111]112]10;?\
 漢字テスト 한국어 中文
 ab漢cd
 字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字
-[?6lprimary
-[?1049h[2J[Halt text[5;5Hmid[?1049lback
-ding
-[?6l[4:0mu0[4:1mu1[4:2mu2[4:3mu3[4:4mu4[4:5mu5[4m[58;2;255;128;0morange[58;5;196mpal[59mnone[21mdouble[24moff[0m
-[4la	b	c
+[4h]0;first title]2;Final ✓ title\]7;file://host/home/user/dir
+[?1049h]8;;https://example.com\link]8;;\ ]8;id=a1;https://example.com/aidlink]8;; ]8;id=a1;https://example.com/asame]8;;
+[?7h[5@]4;1;rgb:ff/00/00]4;1;?[31mred[0m]10;#112233]11;rgb:44/55/66]12;#778899]10;?]11;?]12;?]104;1]110]111]112]10;?\
+a	b	c
+H[3g	[20GH	x	 y[0g[2I*[1Z+
+[5;10HA[2AB[3BC[4CD[2DE7[1;1Hsaved8F[10;1H0123456789[10;3H[4X[12;20H[s[H[u![3G|[7d^[K[1K[2Kx
+[H[?6l]0;first title]2;Final ✓ title\]7;file://host/home/user/dir
+[>3u[=5;2u[>1u[<u[?7h[?7l[?1049l[r[?1049l[1 q[2 q[3 q[4 q[5 q[6 q[?25l[?25h[3 q[38;5;0mx[48;5;255my[38;5;17mx[48;5;238my[38;5;34mx[48;5;221my[38;5;51mx[48;5;204my[38;5;68mx[48;5;187my[38;5;85mx[48;5;170my[38;5;102mx[48;5;153my[38;5;119mx[48;5;136my[38;5;136mx[48;5;119my[38;5;153mx[48;5;102my[38;5;170mx[48;5;85my[38;5;187mx[48;5;68my[38;5;204mx[48;5;51my[38;5;221mx[48;5;34my[38;5;238mx[48;5;17my[38;5;255mx[48;5;0my[0m
+[38;2;255;0;0mR[38;2;0;255;0mG[38;2;0;0;255mB[48;2;10;20;30mbg[38:2::1:2:3mcolon[39;49mdef[0m
+[4:0mu0[4:1mu1[4:2mu2[4:3mu3[4:4mu4[4:5mu5[4m[58;2;255;128;0morange[58;5;196mpal[59mnone[21mdouble[24moff[0m
+c[?1000h[?1002h[?1003h[?1006h[?1016h[1 q[2 q[3 q[4 q[5 q[6 q[?25l[?25h[3 q[H[r[38;5;0mx[48;5;255my[38;5;17mx[48;5;238my[38;5;34mx[48;5;221my[38;5;51mx[48;5;204my[38;5;68mx[48;5;187my[38;5;85mx[48;5;170my[38;5;102mx[48;5;153my[38;5;119mx[48;5;136my[38;5;136mx[48;5;119my[38;5;153mx[48;5;102my[38;5;170mx[48;5;85my[38;5;187mx[48;5;68my[38;5;204mx[48;5;51my[38;5;221mx[48;5;34my[38;5;238mx[48;5;17my[38;5;255mx[48;5;0my[0m
+[38;2;255;0;0mR[38;2;0;255;0mG[38;2;0;0;255mB[48;2;10;20;30mbg[38:2::1:2:3mcolon[39;49mdef[0m
+[2J[Hr 0000
+r 0001
+r 0002
+r 0003
+r 0004
+r 0005
+r 0006
+r 0007
+[3;6r[6;1HDindDind2[3;1HMriMri2[2S[1T[r[20;1Hdone[5@漢字テスト 한국어 中文
+ab漢cd
+字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字
+[?1000h[?1002h[?1003h[?1006h[?1016hfamily:👨‍👩‍👧‍👦 flags:🇫🇷🇯🇵 skin:👍🏽 heart:❤️ text:☺︎
+[?6h[5;10HA[2AB[3BC[4CD[2DE7[1;1Hsaved8F[10;1H0123456789[10;3H[4X[12;20H[s[H[u![3G|[7d^[K[1K[2Kx
+]133;A$ ]133;Bls]133;C
+out
+]133;D;0]133;A$ ]133;Bfalse]133;C
+]133;D;1]133;A$ [?6l漢字テスト 한국어 中文
+ab漢cd
+字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字
+[4ha	b	c
 H[3g	[20GH	x	 y[0g[2I*[1Z+
 [3P
 [?2004h[?1004h[?2026h[?1hprimary

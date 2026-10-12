@@ -262,10 +262,58 @@
       ]
     },
     {
+      "name": "colors-override-left-set",
+      "steps": [
+        {
+          "write": "colors-override-left-set.bin"
+        }
+      ]
+    },
+    {
+      "name": "kitty-keyboard-flags-left-set",
+      "steps": [
+        {
+          "write": "kitty-keyboard-flags-left-set.bin"
+        }
+      ]
+    },
+    {
+      "name": "kitty-keyboard-alt-screen",
+      "steps": [
+        {
+          "write": "kitty-keyboard-alt-screen.bin"
+        }
+      ]
+    },
+    {
       "name": "prompt-delete-lines",
       "steps": [
         {
           "write": "prompt-delete-lines.bin"
+        }
+      ]
+    },
+    {
+      "name": "prompt-region-su",
+      "steps": [
+        {
+          "write": "prompt-region-su.bin"
+        }
+      ]
+    },
+    {
+      "name": "prompt-region-ri",
+      "steps": [
+        {
+          "write": "prompt-region-ri.bin"
+        }
+      ]
+    },
+    {
+      "name": "wrap-flag-region-scroll",
+      "steps": [
+        {
+          "write": "wrap-flag-region-scroll.bin"
         }
       ]
     },

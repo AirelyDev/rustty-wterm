@@ -105,8 +105,9 @@ observes (owner `rustty-vt`).
   `tracked-alt-screen`, whole-write chunking only).
 - **Discarded rows under multi-row bursts.** A second prune between two
   samples is missed. That needs a page of new rows (hundreds at 80 columns)
-  from half a page of input bytes, which only REP (`CSI n b`) or a run of
-  ED 2 scroll-clears on very wide or very short pages can produce.
+  from half a page of input bytes, which only REP (`CSI n b`), SU
+  (`CSI n S`) with a large count, or a run of ED 2 scroll-clears on very wide
+  or very short pages can produce.
 
 ## Findings
 
@@ -130,8 +131,11 @@ faithfully reproduces the newer behaviour.
   differences were `rustty-vt` choices: they are upstream changes.)
 - **Prompt marks after DL.** In v1.3.1 `CSI n M` on a prompt row leaves the
   recycled bottom rows marked as prompts, so `find_prompt` finds a phantom
-  prompt; fixed upstream in `b31fbc846` (ghostty #13940). Found by the seeded
-  fuzzer and pinned by `prompt-delete-lines`.
+  prompt; fixed upstream in `b31fbc846` (ghostty #13940). The same commit
+  resets rows recycled by scroll-region SU, RI and region-bottom linefeeds, so
+  v1.3.1 also keeps stale prompt marks and wrap flags there. Found by the
+  seeded fuzzer and pinned by `prompt-delete-lines`, `prompt-region-su`,
+  `prompt-region-ri` and `wrap-flag-region-scroll`.
 - **Fixed in this adapter:** the discarded-row count was derived from page
   serials, which also advance when a page is re-laid-out in place (region
   scrolls), when ED 3 erases history and across RIS; the harness saw 24–551

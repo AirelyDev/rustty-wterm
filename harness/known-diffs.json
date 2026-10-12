@@ -66,21 +66,51 @@
     "reason": "OSC 133;A then CSI 2M: in v1.3.1 Terminal.deleteLines clears the recycled bottom rows' cells but keeps their semantic_prompt row flag, so find_prompt sees a phantom prompt at row 22. ghostty b31fbc846 ('terminal: fully reset row metadata when recycling row storage', fixes #13940) resets the row; rustty-vt ports the fix."
   },
   {
-    "entry": "random-fuzz-4",
-    "path": "prompts",
-    "owner": "skew",
-    "reason": "Minimised to ESC]133;A BEL '$ ' CSI 2M CRLF, i.e. the prompt-delete-lines case: v1.3.1 deleteLines keeps semantic_prompt on recycled rows, fixed by ghostty b31fbc846."
-  },
-  {
-    "entry": "random-fuzz-18",
-    "path": "prompts",
-    "owner": "skew",
-    "reason": "Minimised to ESC]133;A BEL '$ ' CSI 2M followed by text, the prompt-delete-lines case: v1.3.1 deleteLines keeps semantic_prompt on recycled rows, fixed by ghostty b31fbc846."
-  },
-  {
     "entry": "tracked-alt-screen",
     "path": "tracked",
     "owner": "rustty-vt",
     "reason": "A screen switch and return inside one write (CSI ?1049h ... CSI ?1049l): the Zig layer clears tracked positions on the action that switches screens; rustty-vt has no screen-switch effect, so the adapter compares the active screen per write and the positions survive. Seen only in the whole-write chunking; byte and 7-byte chunkings match. README 'Known gaps'."
+  },
+  {
+    "entry": "prompt-region-su",
+    "path": "prompts",
+    "owner": "skew",
+    "reason": "ESC]133;A, two lines, DECSTBM 3;6, CSI 2S: in v1.3.1 the rows SU recycles at the region bottom keep their prompt mark, so find_prompt reports a phantom prompt at row 4. ghostty b31fbc846 ('terminal: fully reset row metadata when recycling row storage', fixes #13940) resets wrap flags and semantic_prompt on rows recycled by insertLines/deleteLines and scroll-region linefeeds; v1.3.1 clears only the cells, and rustty-vt ports the fix."
+  },
+  {
+    "entry": "prompt-region-ri",
+    "path": "prompts",
+    "owner": "skew",
+    "reason": "ESC]133;A, five lines, DECSTBM 3;6, RI at the region top: in v1.3.1 the recycled row inserted at row 2 keeps the prompt-continuation mark of the row whose storage it reuses, so the prompt chain continues; with the reset row the Rust engine resolves row 3's continuation as a separate prompt. ghostty b31fbc846 ('terminal: fully reset row metadata when recycling row storage', fixes #13940) resets wrap flags and semantic_prompt on rows recycled by insertLines/deleteLines and scroll-region linefeeds; v1.3.1 clears only the cells, and rustty-vt ports the fix."
+  },
+  {
+    "entry": "wrap-flag-region-scroll",
+    "path": "wraps",
+    "owner": "skew",
+    "reason": "DECSTBM 2;5 + DECOM, three 100-column lines: in v1.3.1 the blank row recycled by the region-bottom linefeed keeps wrapsToNext (row 4 reports 10, Rust 00). Exactly the case of b31fbc846's test 'scroll region linefeed recycled row has default metadata'. ghostty b31fbc846 ('terminal: fully reset row metadata when recycling row storage', fixes #13940) resets wrap flags and semantic_prompt on rows recycled by insertLines/deleteLines and scroll-region linefeeds; v1.3.1 clears only the cells, and rustty-vt ports the fix."
+  },
+  {
+    "entry": "random-fuzz-1",
+    "path": "wraps",
+    "owner": "skew",
+    "reason": "Minimised to DECSTBM 2;20, DECOM, IRM and wrapped long lines scrolling at the region bottom: the wrap-flag-region-scroll case. ghostty b31fbc846 ('terminal: fully reset row metadata when recycling row storage', fixes #13940) resets wrap flags and semantic_prompt on rows recycled by insertLines/deleteLines and scroll-region linefeeds; v1.3.1 clears only the cells, and rustty-vt ports the fix."
+  },
+  {
+    "entry": "random-fuzz-13",
+    "path": "prompts",
+    "owner": "skew",
+    "reason": "Minimised to ESC]133;A, wide text, four lines, DECSTBM 3;6 and RI at the region top: the prompt-region-ri case. ghostty b31fbc846 ('terminal: fully reset row metadata when recycling row storage', fixes #13940) resets wrap flags and semantic_prompt on rows recycled by insertLines/deleteLines and scroll-region linefeeds; v1.3.1 clears only the cells, and rustty-vt ports the fix."
+  },
+  {
+    "entry": "random-fuzz-14",
+    "path": "prompts",
+    "owner": "skew",
+    "reason": "Minimised to ESC]133;A '$ ', DECSTBM 3;6, IND at the region bottom, RI at the region top: the prompt-region-ri case. ghostty b31fbc846 ('terminal: fully reset row metadata when recycling row storage', fixes #13940) resets wrap flags and semantic_prompt on rows recycled by insertLines/deleteLines and scroll-region linefeeds; v1.3.1 clears only the cells, and rustty-vt ports the fix."
+  },
+  {
+    "entry": "random-fuzz-17",
+    "path": "prompts",
+    "owner": "skew",
+    "reason": "Minimised to ESC]133;A, wide text, a line, DECSTBM 3;6 and CSI 2S: the prompt-region-su case. ghostty b31fbc846 ('terminal: fully reset row metadata when recycling row storage', fixes #13940) resets wrap flags and semantic_prompt on rows recycled by insertLines/deleteLines and scroll-region linefeeds; v1.3.1 clears only the cells, and rustty-vt ports the fix."
   }
 ]

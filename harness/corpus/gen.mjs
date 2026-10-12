@@ -168,9 +168,26 @@ entry("osc52-unpadded", `${OSC}52;c;${b64("ab").replace(/=+$/, "")}${BEL}`);
 entry("bell", fragments.bell);
 entry("osc133", fragments.osc133);
 entry("decscusr", fragments.decscusr);
+// End states that stay set, so colour overrides and kitty keyboard flags are
+// compared as state, not only through query replies.
+const colorsLeftSet = `${OSC}10;#112233${BEL}${OSC}11;rgb:44/55/66${BEL}${OSC}12;#778899${ST}x\r\n`;
+const kittyLeftSet = `${CSI}>3u${CSI}=5;2u${CSI}>1u${CSI}<u`;
+entry("colors-override-left-set", colorsLeftSet);
+entry("kitty-keyboard-flags-left-set", kittyLeftSet);
+// Flags pushed on the main screen, changed on the alternate screen, then back.
+entry(
+  "kitty-keyboard-alt-screen",
+  `${CSI}>3u${CSI}?1049h${CSI}>8u${CSI}=1;1ualt${CSI}?1049lmain${CSI}?u`,
+);
 // DL on a prompt row: the recycled blank row at the bottom must not inherit
 // the prompt mark (found by random-fuzz-4/18).
 entry("prompt-delete-lines", `${OSC}133;A${BEL}$ ${CSI}2M\r\n`);
+// Same family in scroll regions (found by random-fuzz-1/13/14/17): rows
+// recycled by SU / RI / a linefeed at the region bottom must not keep the
+// semantic prompt mark or the wrap flag of the row whose storage they reuse.
+entry("prompt-region-su", `${OSC}133;A${BEL}$ AB\r\nr4\r\n${CSI}3;6r${CSI}2S`);
+entry("prompt-region-ri", `${OSC}133;A${BEL}$ AB\r\nr4\r\nr5\r\nr6\r\nr7\r\n${CSI}3;6r${CSI}3;1H${ESC}Mri`);
+entry("wrap-flag-region-scroll", `${CSI}2;5r${CSI}?6h` + `${"x".repeat(100)}\r\n`.repeat(3));
 entry("kitty-image-rgb", kittyImage, {
   skip: "Task 5 outcome B: the Rust build has no kitty graphics; image replies and state exist only in the Zig build",
 });
@@ -211,6 +228,8 @@ function mulberry32(seed) {
 const pool = [
   ...Object.values(fragments),
   queriesCommon,
+  colorsLeftSet,
+  kittyLeftSet,
   `${OSC}52;c;${b64("fuzz")}${BEL}`,
   lines(5, "fz"),
   `${CSI}?1049h`, `${CSI}?1049l`, `${CSI}2;20r`, `${CSI}r`, `${CSI}H`, `${CSI}J`,

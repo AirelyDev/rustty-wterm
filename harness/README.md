@@ -17,6 +17,9 @@ tools/build-wasm.sh --diff          # or:
 node harness/diff.mjs [--rust <wasm>] [--zig <wasm>] [--only <entry>] [--verbose]
 ```
 
+`--only <entry>` runs one entry and skips the unused-known-diff and coverage
+checks (they need the whole corpus).
+
 Exit 0 iff every corpus entry is identical in both engines modulo
 `known-diffs.json`, every known diff was used, and the adapter checks pass. The
 last line reads `corpus entries: N, identical: M, known: K`.
@@ -52,6 +55,10 @@ generated files are committed; `tools/check.sh` regenerates them and fails if
 they changed. `random-fuzz-<seed>` mixes 50 fragments per seed with a seeded
 PRNG over 20 seeds (1 000 mixes); the fuzz pool uses a reduced query fragment
 because the full DECRQM sweep's known replies are pinned by `queries`.
+The run also fails if no snapshot anywhere in the corpus has non-empty colour
+overrides or non-zero kitty keyboard flags (`colors-override-left-set`,
+`kitty-keyboard-flags-left-set`, `kitty-keyboard-alt-screen` and the fuzz pool
+leave them set), so those comparisons cannot silently become `{} === {}`.
 `kitty-image-rgb` is skipped: the Rust build has no kitty graphics (Task 5
 outcome B).
 

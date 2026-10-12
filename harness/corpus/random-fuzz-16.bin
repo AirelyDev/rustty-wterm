@@ -1,40 +1,50 @@
-[Jé ạ̀ ñ x⃝
-[4hding
-[?1000h[?1002h[?1003h[?1006h[?1016hHello, world!
-Second line
-no newline at end[?1049hprimary
-[?1049h[2J[Halt text[5;5Hmid[?1049lback
-[c[5n[6n[?25$p[?2004$p[?uHello, world!
-Second line
-no newline at end]8;;https://example.com\link]8;;\ ]8;id=a1;https://example.com/aidlink]8;; ]8;id=a1;https://example.com/asame]8;;
-]133;A$ ]133;Bls]133;C
+[Hé ạ̀ ñ x⃝
+[4h]133;A$ ]133;Bls]133;C
 out
 ]133;D;0]133;A$ ]133;Bfalse]133;C
-]133;D;1]133;A$ [r[2M[?1000h[?1002h[?1003h[?1006h[?1016h]133;A$ ]133;Bls]133;C
-out
-]133;D;0]133;A$ ]133;Bfalse]133;C
-]133;D;1]133;A$ [2MThe quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. END
-short
-The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. END
-[?6h]4;1;rgb:ff/00/00]4;1;?[31mred[0m]10;#112233]11;rgb:44/55/66]12;#778899]10;?]11;?]12;?]104;1]110]111]112]10;?\
-[?7l[4l]52;c;ZnV6eg==fz 0000
+]133;D;1]133;A$ [?1000h[?1002h[?1003h[?1006h[?1016hHello, world!
+Second line
+no newline at endfz 0000
 fz 0001
 fz 0002
 fz 0003
 fz 0004
-[3P[5@The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. END
+primary
+[?1049h[2J[Halt text[5;5Hmid[?1049lback
+
+]10;#112233]11;rgb:44/55/66]12;#778899\x
+Hello, world!
+Second line
+no newline at end]8;;https://example.com\link]8;;\ ]8;id=a1;https://example.com/aidlink]8;; ]8;id=a1;https://example.com/asame]8;;
+[1 q[2 q[3 q[4 q[5 q[6 q[?25l[?25h[3 q[2;20r[2L[?2004h[?1004h[?2026h[?1h[1 q[2 q[3 q[4 q[5 q[6 q[?25l[?25h[3 q[2LThe quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. END
+short
+The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. END
+[?7h]4;1;rgb:ff/00/00]4;1;?[31mred[0m]10;#112233]11;rgb:44/55/66]12;#778899]10;?]11;?]12;?]104;1]110]111]112]10;?\
+[J[4h[>3u[=5;2u[>1u[<u]52;c;ZnV6eg==[3P[5@The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. END
 short
 The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. END
 [30mF30[31mF31[32mF32[33mF33[34mF34[35mF35[36mF36[37mF37[40mB40[41mB41[42mB42[43mB43[44mB44[45mB45[46mB46[47mB47[90mf90[91mf91[92mf92[93mf93[94mf94[95mf95[96mf96[97mf97[100mb100[101mb101[102mb102[103mb103[104mb104[105mb105[106mb106[107mb107[0m
 [1mbold[0m [2mfaint[0m [3mitalic[0m [5mblink[0m [7minverse[0m [8minvisible[0m [9mstrike[0m [1;3;4;9mall[22;23;24;29moff[0m
-cé ạ̀ ñ x⃝
-
-[H[?6l]52;c;ZnV6eg==[?1049l[?7l[5@ding
-
-[3P[?6l[?1049hprimary
+[2Mé ạ̀ ñ x⃝
+#8[H[?6h[>3u[=5;2u[>1u[<u[?1049h[?7l[5@]133;A$ ]133;Bls]133;C
+out
+]133;D;0]133;A$ ]133;Bfalse]133;C
+]133;D;1]133;A$ #8[3P[?6hfz 0000
+fz 0001
+fz 0002
+fz 0003
+fz 0004
+primary
 [?1049h[2J[Halt text[5;5Hmid[?1049lback
-[5;10HA[2AB[3BC[4CD[2DE7[1;1Hsaved8F[10;1H0123456789[10;3H[4X[12;20H[s[H[u![3G|[7d^[K[1K[2Kx
-[3Pc漢字テスト 한국어 中文
+[2J[Hr 0000
+r 0001
+r 0002
+r 0003
+r 0004
+r 0005
+r 0006
+r 0007
+[3;6r[6;1HDindDind2[3;1HMriMri2[2S[1T[r[20;1Hdone[3Pc漢字テスト 한국어 中文
 ab漢cd
 字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字
-]8;;https://example.com\link]8;;\ ]8;id=a1;https://example.com/aidlink]8;; ]8;id=a1;https://example.com/asame]8;;
+]0;first title]2;Final ✓ title\]7;file://host/home/user/dir

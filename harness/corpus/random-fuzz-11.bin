@@ -1,33 +1,47 @@
-[?1049h[?1049h[H[r[2M[?1049l[4:0mu0[4:1mu1[4:2mu2[4:3mu3[4:4mu4[4:5mu5[4m[58;2;255;128;0morange[58;5;196mpal[59mnone[21mdouble[24moff[0m
-[?1049h[H[c[5n[6n[?25$p[?2004$p[?u]52;c;ZnV6eg==[2L]133;A$ ]133;Bls]133;C
-out
-]133;D;0]133;A$ ]133;Bfalse]133;C
-]133;D;1]133;A$ [?7h[?7hThe quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. END
+fz 0000
+fz 0001
+fz 0002
+fz 0003
+fz 0004
+fz 0000
+fz 0001
+fz 0002
+fz 0003
+fz 0004
+[r[2;20r[2L[?1049h[4:0mu0[4:1mu1[4:2mu2[4:3mu3[4:4mu4[4:5mu5[4m[58;2;255;128;0morange[58;5;196mpal[59mnone[21mdouble[24moff[0m
+fz 0000
+fz 0001
+fz 0002
+fz 0003
+fz 0004
+[r]10;#112233]11;rgb:44/55/66]12;#778899\x
+[>3u[=5;2u[>1u[<u[2L[1 q[2 q[3 q[4 q[5 q[6 q[?25l[?25h[3 q[?7l[?7hThe quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. END
 short
 The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. END
 primary
 [?1049h[2J[Halt text[5;5Hmid[?1049lback
 ]8;;https://example.com\link]8;;\ ]8;id=a1;https://example.com/aidlink]8;; ]8;id=a1;https://example.com/asame]8;;
-ding
-[?2004h[?1004h[?2026h[?1h[rfamily:👨‍👩‍👧‍👦 flags:🇫🇷🇯🇵 skin:👍🏽 heart:❤️ text:☺︎
-[r[2;20r]133;A$ ]133;Bls]133;C
+]133;A$ ]133;Bls]133;C
 out
 ]133;D;0]133;A$ ]133;Bfalse]133;C
-]133;D;1]133;A$ [2L[3P[4l]4;1;rgb:ff/00/00]4;1;?[31mred[0m]10;#112233]11;rgb:44/55/66]12;#778899]10;?]11;?]12;?]104;1]110]111]112]10;?\
-[Ja	b	c
+]133;D;1]133;A$ ding
+[2;20rfamily:👨‍👩‍👧‍👦 flags:🇫🇷🇯🇵 skin:👍🏽 heart:❤️ text:☺︎
+[r[2;20r[1 q[2 q[3 q[4 q[5 q[6 q[?25l[?25h[3 q[2L[5@[4l]4;1;rgb:ff/00/00]4;1;?[31mred[0m]10;#112233]11;rgb:44/55/66]12;#778899]10;?]11;?]12;?]104;1]110]111]112]10;?\
+[Ha	b	c
 H[3g	[20GH	x	 y[0g[2I*[1Z+
 [38;5;0mx[48;5;255my[38;5;17mx[48;5;238my[38;5;34mx[48;5;221my[38;5;51mx[48;5;204my[38;5;68mx[48;5;187my[38;5;85mx[48;5;170my[38;5;102mx[48;5;153my[38;5;119mx[48;5;136my[38;5;136mx[48;5;119my[38;5;153mx[48;5;102my[38;5;170mx[48;5;85my[38;5;187mx[48;5;68my[38;5;204mx[48;5;51my[38;5;221mx[48;5;34my[38;5;238mx[48;5;17my[38;5;255mx[48;5;0my[0m
 [38;2;255;0;0mR[38;2;0;255;0mG[38;2;0;0;255mB[48;2;10;20;30mbg[38:2::1:2:3mcolon[39;49mdef[0m
-[4h]0;first title]2;Final ✓ title\]7;file://host/home/user/dir
+[?6l]0;first title]2;Final ✓ title\]7;file://host/home/user/dir
 é ạ̀ ñ x⃝
-[4h[?1000h[?1002h[?1003h[?1006h[?1016h[?1049l[2;20r[2Mé ạ̀ ñ x⃝
-[2M[3Pding
-[30mF30[31mF31[32mF32[33mF33[34mF34[35mF35[36mF36[37mF37[40mB40[41mB41[42mB42[43mB43[44mB44[45mB45[46mB46[47mB47[90mf90[91mf91[92mf92[93mf93[94mf94[95mf95[96mf96[97mf97[100mb100[101mb101[102mb102[103mb103[104mb104[105mb105[106mb106[107mb107[0m
+[?6l[?2004h[?1004h[?2026h[?1h[?1049l[2;20r[2Lé ạ̀ ñ x⃝
+[2L[3P]133;A$ ]133;Bls]133;C
+out
+]133;D;0]133;A$ ]133;Bfalse]133;C
+]133;D;1]133;A$ [30mF30[31mF31[32mF32[33mF33[34mF34[35mF35[36mF36[37mF37[40mB40[41mB41[42mB42[43mB43[44mB44[45mB45[46mB46[47mB47[90mf90[91mf91[92mf92[93mf93[94mf94[95mf95[96mf96[97mf97[100mb100[101mb101[102mb102[103mb103[104mb104[105mb105[106mb106[107mb107[0m
 [1mbold[0m [2mfaint[0m [3mitalic[0m [5mblink[0m [7minverse[0m [8minvisible[0m [9mstrike[0m [1;3;4;9mall[22;23;24;29moff[0m
 [4:0mu0[4:1mu1[4:2mu2[4:3mu3[4:4mu4[4:5mu5[4m[58;2;255;128;0morange[58;5;196mpal[59mnone[21mdouble[24moff[0m
-[2Lfz 0000
+[2L]52;c;ZnV6eg==fz 0000
 fz 0001
 fz 0002
 fz 0003
 fz 0004
-[?1049h

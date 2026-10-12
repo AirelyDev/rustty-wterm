@@ -1,6 +1,4 @@
-[?6h[4l[5;10HA[2AB[3BC[4CD[2DE7[1;1Hsaved8F[10;1H0123456789[10;3H[4X[12;20H[s[H[u![3G|[7d^[K[1K[2Kx
-[J[4:0mu0[4:1mu1[4:2mu2[4:3mu3[4:4mu4[4:5mu5[4m[58;2;255;128;0morange[58;5;196mpal[59mnone[21mdouble[24moff[0m
-[r[?6l[c[5n[6n[?25$p[?2004$p[?u#8[2J[Hr 0000
+[?7h[4l[2J[Hr 0000
 r 0001
 r 0002
 r 0003
@@ -8,10 +6,23 @@ r 0004
 r 0005
 r 0006
 r 0007
-[3;6r[6;1HDindDind2[3;1HMriMri2[2S[1T[r[20;1Hdone[5@[4h[?7lHello, world!
+[3;6r[6;1HDindDind2[3;1HMriMri2[2S[1T[r[20;1Hdone[H漢字テスト 한국어 中文
+ab漢cd
+字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字
+[2;20r[?6h]10;#112233]11;rgb:44/55/66]12;#778899\x
+#8[2J[Hr 0000
+r 0001
+r 0002
+r 0003
+r 0004
+r 0005
+r 0006
+r 0007
+[3;6r[6;1HDindDind2[3;1HMriMri2[2S[1T[r[20;1Hdone[4l[?6l[?7lHello, world!
 Second line
-no newline at end[c[5n[6n[?25$p[?2004$p[?u]0;first title]2;Final ✓ title\]7;file://host/home/user/dir
-#8]8;;https://example.com\link]8;;\ ]8;id=a1;https://example.com/aidlink]8;; ]8;id=a1;https://example.com/asame]8;;
+no newline at end]10;#112233]11;rgb:44/55/66]12;#778899\x
+]4;1;rgb:ff/00/00]4;1;?[31mred[0m]10;#112233]11;rgb:44/55/66]12;#778899]10;?]11;?]12;?]104;1]110]111]112]10;?\
+#8]0;first title]2;Final ✓ title\]7;file://host/home/user/dir
 [4h[?6la	b	c
 H[3g	[20GH	x	 y[0g[2I*[1Z+
 Hello, world!
@@ -19,18 +30,29 @@ Second line
 no newline at end[5@[5;10HA[2AB[3BC[4CD[2DE7[1;1Hsaved8F[10;1H0123456789[10;3H[4X[12;20H[s[H[u![3G|[7d^[K[1K[2Kx
 ]8;;https://example.com\link]8;;\ ]8;id=a1;https://example.com/aidlink]8;; ]8;id=a1;https://example.com/asame]8;;
 family:👨‍👩‍👧‍👦 flags:🇫🇷🇯🇵 skin:👍🏽 heart:❤️ text:☺︎
-]52;c;ZnV6eg==(0lqk(Ba	b	c
+[>3u[=5;2u[>1u[<u(0lqk(Ba	b	c
 H[3g	[20GH	x	 y[0g[2I*[1Z+
 [4:0mu0[4:1mu1[4:2mu2[4:3mu3[4:4mu4[4:5mu5[4m[58;2;255;128;0morange[58;5;196mpal[59mnone[21mdouble[24moff[0m
-[2M]4;1;rgb:ff/00/00]4;1;?[31mred[0m]10;#112233]11;rgb:44/55/66]12;#778899]10;?]11;?]12;?]104;1]110]111]112]10;?\
+[2L]4;1;rgb:ff/00/00]4;1;?[31mred[0m]10;#112233]11;rgb:44/55/66]12;#778899]10;?]11;?]12;?]104;1]110]111]112]10;?\
+[1 q[2 q[3 q[4 q[5 q[6 q[?25l[?25h[3 q(0lqk(B]8;;https://example.com\link]8;;\ ]8;id=a1;https://example.com/aidlink]8;; ]8;id=a1;https://example.com/asame]8;;
 ]133;A$ ]133;Bls]133;C
 out
 ]133;D;0]133;A$ ]133;Bfalse]133;C
-]133;D;1]133;A$ (0lqk(B]8;;https://example.com\link]8;;\ ]8;id=a1;https://example.com/aidlink]8;; ]8;id=a1;https://example.com/asame]8;;
-ding
-[5;10HA[2AB[3BC[4CD[2DE7[1;1Hsaved8F[10;1H0123456789[10;3H[4X[12;20H[s[H[u![3G|[7d^[K[1K[2Kx
-c[?6lc[?1049h[3P[?7lé ạ̀ ñ x⃝
-[J[2;20r]4;1;rgb:ff/00/00]4;1;?[31mred[0m]10;#112233]11;rgb:44/55/66]12;#778899]10;?]11;?]12;?]104;1]110]111]112]10;?\
-[5@[HHello, world!
+]133;D;1]133;A$ [2J[Hr 0000
+r 0001
+r 0002
+r 0003
+r 0004
+r 0005
+r 0006
+r 0007
+[3;6r[6;1HDindDind2[3;1HMriMri2[2S[1T[r[20;1Hdone[2M[?6hcfz 0000
+fz 0001
+fz 0002
+fz 0003
+fz 0004
+[5@[Jé ạ̀ ñ x⃝
+[H[2;20r]4;1;rgb:ff/00/00]4;1;?[31mred[0m]10;#112233]11;rgb:44/55/66]12;#778899]10;?]11;?]12;?]104;1]110]111]112]10;?\
+[4l[rHello, world!
 Second line
 no newline at end

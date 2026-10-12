@@ -210,6 +210,9 @@ if (adapterProblems.length === 0) {
   console.log("adapter: GhosttyCore runs the Rust build (constructor and load(), no graphics_* exports)");
 }
 
+// End-state observables that must be exercised somewhere in the corpus, so a
+// corpus edit cannot make their comparison vacuous ({} === {}, 0 === 0).
+const coverage = { overrides: false, kittyFlags: false };
 let total = 0, identical = 0, known = 0, failed = 0, skipped = 0, comparisons = 0;
 for (const entry of manifest.entries) {
   if (only && entry.name !== only) continue;
@@ -223,6 +226,10 @@ for (const entry of manifest.entries) {
   for (const { label, writeChunks } of chunkings(entry)) {
     const [a, b] = [await run(rustPath, entry, writeChunks), await run(zigPath, entry, writeChunks)];
     comparisons++;
+    for (const snap of [a, b]) {
+      if (Object.keys(snap.overrides ?? {}).length > 0) coverage.overrides = true;
+      if (snap.modes[7]) coverage.kittyFlags = true;
+    }
     // Per top-level field, in snapshot order, so one noisy field cannot
     // hide another.
     const diffs = Object.keys(a).flatMap((key) => diffPaths(a[key], b[key], key));
@@ -248,7 +255,14 @@ for (const entry of manifest.entries) {
 }
 
 let staleKnown = 0;
+let vacuous = 0;
 if (!only) {
+  for (const [name, seen] of Object.entries(coverage)) {
+    if (!seen) {
+      vacuous++;
+      console.log(`VACUOUS ${name}: no corpus entry leaves it non-empty/non-zero — add one`);
+    }
+  }
   knownDiffs.forEach((k, i) => {
     if (!knownUsed.has(i)) {
       staleKnown++;
@@ -260,4 +274,4 @@ if (!only) {
 console.log(`comparisons: ${comparisons} (entry x chunking, both engines through GhosttyCore)`);
 console.log(`corpus entries: ${total}, identical: ${identical}, known: ${known}` +
   (skipped ? ` (skipped: ${skipped})` : "") + (failed ? `, FAILED: ${failed}` : ""));
-process.exit(failed || staleKnown || adapterProblems.length ? 1 : 0);
+process.exit(failed || staleKnown || vacuous || adapterProblems.length ? 1 : 0);
