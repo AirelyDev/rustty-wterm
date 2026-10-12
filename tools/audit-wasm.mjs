@@ -14,12 +14,21 @@ const REQUIRED = ["init", "deinit", "resize", "write", "get_cols", "get_rows", "
   "synchronized_output_generation", "get_color_override", "set_theme_colors",
   "find_prompt", "track_position", "resolve_position", "release_position"];
 
+/**
+ * Export-name prefixes that must NOT appear. Kitty graphics is compiled out of
+ * rustty-vt on wasm32-unknown-unknown (Task 5, outcome B); wterm treats every
+ * `graphics_*` export as optional, so omitting them reports "no images" instead
+ * of exporting counters that would always read zero.
+ */
+const NOT_EXPORTED = ["graphics"];
+
 const module = new WebAssembly.Module(readFileSync(process.argv[2]));
 const imports = WebAssembly.Module.imports(module);
 const exports = new Set(WebAssembly.Module.exports(module).map((e) => e.name));
 const missing = REQUIRED.filter((n) => !exports.has(n));
-if (imports.length || missing.length) {
-  console.error("imports:", imports.map((i) => `${i.module}.${i.name}`), "missing:", missing);
+const forbidden = [...exports].filter((n) => NOT_EXPORTED.some((p) => n.startsWith(p)));
+if (imports.length || missing.length || forbidden.length) {
+  console.error("imports:", imports.map((i) => `${i.module}.${i.name}`), "missing:", missing, "forbidden:", forbidden);
   process.exit(1);
 }
 console.log(`ok: ${exports.size} exports, 0 imports`);

@@ -127,7 +127,7 @@ pub(crate) fn install(effects: &mut Effects<'static>) {
 // -- Responses ---------------------------------------------------------------
 
 /// `rustty-vt` formats every reply itself once `write_pty` is set (DSR/CPR,
-/// DECRPM, kitty keyboard, OSC 10/11, kitty graphics), so this only routes the
+/// DECRPM, kitty keyboard, OSC 10/11), so this only routes the
 /// bytes; nothing is re-formatted here. It also answers queries the Zig layer
 /// leaves unanswered (secondary/tertiary DA, DECRQSS, XTGETTCAP, XTVERSION,
 /// OSC 4/12/21 colour queries, OSC 5522, visibility/colour-scheme reports).
@@ -205,7 +205,10 @@ fn zig_answers(data: &[u8]) -> bool {
     if data == b"\x1b[?1;2c" || data == b"\x1b[0n" {
         return true;
     }
-    // Kitty graphics responses (wasm_api.zig handleKittyCommand).
+    // Kitty graphics responses (wasm_api.zig handleKittyCommand). Unreachable
+    // in this build (kitty graphics is compiled out of rustty-vt on
+    // wasm32-unknown-unknown and the feature is off on the host, see
+    // Cargo.toml), kept so the allowlist stays the Zig layer's if it returns.
     if data.starts_with(b"\x1b_G") {
         return true;
     }

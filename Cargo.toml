@@ -11,11 +11,15 @@ description = "wterm's ghostty-vt wasm ABI, implemented on the Rustty VT engine"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-# Path dependency on the Rustty workspace (read-only). Features mirror what the
-# Zig layer needs: render state and kitty graphics. Everything else is off to
-# keep the wasm small; Task 5 decides whether kitty-graphics survives
-# wasm32-unknown-unknown.
-rustty-vt = { path = "../rustty/crates/rustty-vt", default-features = false, features = ["render-state", "kitty-graphics"] }
+# Path dependency on the Rustty workspace (read-only). Only render state is on;
+# everything else is off to keep the wasm small.
+#
+# `kitty-graphics` is deliberately OFF (Task 5 decision gate, outcome B):
+# rustty-vt forces `options::KITTY_GRAPHICS = false` on freestanding targets,
+# wasm32-unknown-unknown included (no timestamps, no wuffs PNG/zlib there), so
+# the shipped wasm ignores every `ESC _ G` command whatever the feature says.
+# Leaving it off on the host too keeps `cargo test` describing the same engine.
+rustty-vt = { path = "../rustty/crates/rustty-vt", default-features = false, features = ["render-state"] }
 
 [profile.release]
 opt-level = "s"

@@ -437,7 +437,6 @@ dependencies = [
  "rustty-terminfo",
  "rustty-unicode",
  "rustty-util",
- "rustty-wuffs",
  "rustty-zigstd",
 ]
 
@@ -446,15 +445,6 @@ name = "rustty-wterm"
 version = "0.1.0"
 dependencies = [
  "rustty-vt",
-]
-
-[[package]]
-name = "rustty-wuffs"
-version = "0.1.0"
-dependencies = [
- "allocator-api2",
- "log",
- "wuffs-sys",
 ]
 
 [[package]]
@@ -512,11 +502,3 @@ name = "windows-link"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f0805222e57f7521d6a62e36fa9163bc891acd422f971defe97d64e70d0a4fe5"
-
-[[package]]
-name = "wuffs-sys"
-version = "0.1.0"
-dependencies = [
- "bindgen",
- "cc",
-]
