@@ -1,1 +1,86 @@
-[]
+[
+  {
+    "entry": "scrollback-overflow",
+    "path": "scrollbackCount",
+    "owner": "skew",
+    "reason": "Rows per page differ, so byte-limited pruning drops different amounts: probed at 80 cols, the Zig build prunes 589-row pages and the Rust build 673-row pages (both satisfy history + 24 + discarded = 2001 lines). std_capacity is 215x215 at both v1.3.1 (wterm's pin) and 246f70287, but ghostty d2ff6d77a ('pages initialize from zeroed memory and cache-line align their cells') rewrote Page.layout, which changes Capacity.adjust's row count."
+  },
+  {
+    "entry": "scrollback-overflow",
+    "path": "scrollbackDiscarded",
+    "owner": "skew",
+    "reason": "Same page-size skew as scrollbackCount (ghostty d2ff6d77a page layout): Zig discards 2 x 589 = 1178 rows, Rust 1 x 673 = 673. The Rust value is the adapter's pin-based count of pruned rows and matches its own history exactly."
+  },
+  {
+    "entry": "scrollback-overflow",
+    "path": "sb",
+    "owner": "skew",
+    "reason": "Rust keeps 505 more history rows than Zig (page-size skew, ghostty d2ff6d77a); rows present in both engines are identical, the extra oldest rows exist only on the Rust side."
+  },
+  {
+    "entry": "scrollback-overflow",
+    "path": "sbWraps",
+    "owner": "skew",
+    "reason": "Wrap metadata for the extra history rows the Rust build retains (page-size skew, ghostty d2ff6d77a)."
+  },
+  {
+    "entry": "scrollback-overflow",
+    "path": "prompts",
+    "owner": "skew",
+    "reason": "The prompt sweep covers history + 24 rows, which is longer on the Rust side (page-size skew, ghostty d2ff6d77a); every row both engines have answers null in both."
+  },
+  {
+    "entry": "queries",
+    "path": "responses[17]",
+    "owner": "skew",
+    "reason": "DECRQM ?67 (DECBKM): v1.3.1 modes.zig has no mode 67, so the Zig layer answers 'not recognised' (;0$y); ghostty aea70a5f7 ('core: implement backarrow key mode (DECBKM) - mode 67') added it, so the Rust engine answers 'reset' (;2$y)."
+  },
+  {
+    "entry": "queries",
+    "path": "responses[19]",
+    "owner": "skew",
+    "reason": "DECRQM ?117 (DECECM): unknown to v1.3.1 (;0$y); ghostty c092b2bcf / fe98aef21 ('terminal: report DECECM as permanently reset', #12660) answers ;4$y, which rustty-vt ports."
+  },
+  {
+    "entry": "queries-ansi-modes",
+    "path": "responses",
+    "owner": "skew",
+    "reason": "ANSI-form DECRQM (CSI 4$p, CSI 20$p) gets no reply from the Zig build: v1.3.1 stream.zig only enters the DECRQM branch for two intermediates ('?$'), so the single-'$' ANSI form is dropped before ResponseHandler.request_mode. ghostty 9dc0d974e ('terminal: answer ANSI DECRQM queries') fixed it; the Rust engine answers 4;2$y, 20;2$y, 4;1$y."
+  },
+  {
+    "entry": "osc52-selector",
+    "path": "clipboard",
+    "owner": "skew",
+    "reason": "OSC 52 with selector '0': wasm_api.zig ClipboardState.set accepts only kind 'c' from v1.3.1's raw clipboard_contents action. At 246f70287 the selector reaches embedders only as a clipboard.Location: stream_terminal.zig clipboardContents maps 's'/'p' and everything else to .standard (ghostty 634ef7198, 'terminal: make clipboard writes protocol neutral'), so the adapter cannot tell '0' from 'c'."
+  },
+  {
+    "entry": "osc52-unpadded",
+    "path": "clipboard",
+    "owner": "skew",
+    "reason": "OSC 52 payload without '=' padding: the Zig layer decodes with std.base64.standard (rejects it); 246f70287 stream_terminal.zig decodes with simd.base64.decodeStrict(.optional) and hands the effect decoded bytes ('a missing-padding tail is tolerated', ghostty bc2f7d7d2 'terminal: update Kitty clipboard base64 handling to spec')."
+  },
+  {
+    "entry": "prompt-delete-lines",
+    "path": "prompts",
+    "owner": "skew",
+    "reason": "OSC 133;A then CSI 2M: in v1.3.1 Terminal.deleteLines clears the recycled bottom rows' cells but keeps their semantic_prompt row flag, so find_prompt sees a phantom prompt at row 22. ghostty b31fbc846 ('terminal: fully reset row metadata when recycling row storage', fixes #13940) resets the row; rustty-vt ports the fix."
+  },
+  {
+    "entry": "random-fuzz-4",
+    "path": "prompts",
+    "owner": "skew",
+    "reason": "Minimised to ESC]133;A BEL '$ ' CSI 2M CRLF, i.e. the prompt-delete-lines case: v1.3.1 deleteLines keeps semantic_prompt on recycled rows, fixed by ghostty b31fbc846."
+  },
+  {
+    "entry": "random-fuzz-18",
+    "path": "prompts",
+    "owner": "skew",
+    "reason": "Minimised to ESC]133;A BEL '$ ' CSI 2M followed by text, the prompt-delete-lines case: v1.3.1 deleteLines keeps semantic_prompt on recycled rows, fixed by ghostty b31fbc846."
+  },
+  {
+    "entry": "tracked-alt-screen",
+    "path": "tracked",
+    "owner": "rustty-vt",
+    "reason": "A screen switch and return inside one write (CSI ?1049h ... CSI ?1049l): the Zig layer clears tracked positions on the action that switches screens; rustty-vt has no screen-switch effect, so the adapter compares the active screen per write and the positions survive. Seen only in the whole-write chunking; byte and 7-byte chunkings match. README 'Known gaps'."
+  }
+]
