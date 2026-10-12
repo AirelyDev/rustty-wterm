@@ -1,0 +1,6 @@
+{
+  "name": "rustty-wterm-harness",
+  "private": true,
+  "type": "module",
+  "dependencies": { "@wterm/core": "0.5.4", "@wterm/ghostty": "0.5.4" }
+}
