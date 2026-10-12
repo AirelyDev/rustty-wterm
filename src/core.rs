@@ -89,6 +89,17 @@ fn rgb(v: u32) -> DynamicRGB {
     })
 }
 
+/// Largest grid (cells) the adapter will allocate: 8000 x 8000. wasm32 has 4 GB
+/// of address space; past roughly 3 GB the engine's resize fails with an
+/// allocation error that leaves the screen inconsistent, and the next
+/// `update` aborts (found by harness/robustness.mjs at 20000x20000). The Zig
+/// layer fails such a resize with OutOfMemory; we refuse it up front instead.
+pub const MAX_CELLS: u32 = 8000 * 8000;
+
+fn size_supported(cols: u16, rows: u16) -> bool {
+    u32::from(cols) * u32::from(rows) <= MAX_CELLS
+}
+
 impl Core {
     pub fn new(
         cols: u16,
@@ -98,7 +109,7 @@ impl Core {
         bg_rgb: u32,
         image_storage_limit: u32,
     ) -> Option<Box<Core>> {
-        if cols == 0 || rows == 0 {
+        if cols == 0 || rows == 0 || !size_supported(cols, rows) {
             return None;
         }
         let mut modes = ModePacked::default();
@@ -246,7 +257,7 @@ impl Core {
     }
 
     pub fn resize(&mut self, cols: u16, rows: u16) {
-        if cols == 0 || rows == 0 {
+        if cols == 0 || rows == 0 || !size_supported(cols, rows) {
             return;
         }
         // Go through the stream's handler so resize side effects (synchronized

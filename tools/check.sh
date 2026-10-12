@@ -11,3 +11,4 @@ cargo test
 node harness/corpus/gen.mjs >/dev/null
 git diff --exit-code --stat -- harness/corpus
 tools/build-wasm.sh --diff
+node harness/robustness.mjs target/wasm32-unknown-unknown/release/rustty_wterm.wasm

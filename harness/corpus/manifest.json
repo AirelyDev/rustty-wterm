@@ -517,6 +517,46 @@
           "write": "random-fuzz-20.bin"
         }
       ]
+    },
+    {
+      "name": "real-git-log",
+      "steps": [
+        {
+          "write": "real-git-log.bin"
+        }
+      ]
+    },
+    {
+      "name": "real-less",
+      "steps": [
+        {
+          "write": "real-less.bin"
+        }
+      ]
+    },
+    {
+      "name": "real-ls-color",
+      "steps": [
+        {
+          "write": "real-ls-color.bin"
+        }
+      ]
+    },
+    {
+      "name": "real-top",
+      "steps": [
+        {
+          "write": "real-top.bin"
+        }
+      ]
+    },
+    {
+      "name": "real-vim",
+      "steps": [
+        {
+          "write": "real-vim.bin"
+        }
+      ]
     }
   ]
 }

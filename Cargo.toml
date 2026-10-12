@@ -27,3 +27,12 @@ lto = true
 codegen-units = 1
 panic = "abort"
 strip = true
+
+# rustty-vt's debug builds run Page::verify_integrity on every page grow/resize
+# (`cfg!(debug_assertions)`), which makes the hostile-input tests (a 65535x65535
+# resize, 4 MB of garbage) take many minutes. The engine's debug assertions are
+# the engine's own business (Rustty tests them); this crate's tests exercise the
+# adapter against the same code as release, so build the engine as release does.
+[profile.dev.package.rustty-vt]
+debug-assertions = false
+opt-level = 2

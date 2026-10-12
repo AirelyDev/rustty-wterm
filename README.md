@@ -32,6 +32,19 @@ colour overrides, modes, wrap metadata, discarded rows, prompts and tracked
 positions. Every difference is either fixed or listed with evidence in
 `harness/known-diffs.json`. See `harness/README.md`.
 
+Real-program recordings (`harness/corpus/real-*.bin`: `ls`, `git log`, `vim`,
+`top`, `less`) are part of the corpus and were identical in both engines with
+no new allowance. `node harness/robustness.mjs <wasm>` and `tests/hostile.rs`
+prove that no export traps on hostile input (null handle and buffers,
+`u32::MAX` offsets, extreme resizes, 64 KB OSC 52, 4 MB APC, garbage).
+
+Grids over 64 M cells (8000 x 8000) are refused by `init` and `resize`: on
+wasm32 a larger resize fails inside the engine on allocation and leaves the
+screen inconsistent, so the next `update` aborted (found by the robustness
+script). `[profile.dev.package.rustty-vt]` builds the engine without debug
+assertions in tests: its per-page integrity check makes a 65535 x 65535
+resize take minutes.
+
 ## How effects reach the host
 
 `rustty-vt` reports side effects through `stream_terminal::Effects`, plain `fn`

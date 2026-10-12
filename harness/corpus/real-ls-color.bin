@@ -1,0 +1,5 @@
+^Dtotal 24
+-rw-r--r--@ 1 user  staff  31 Jan  2  2020 a.txt
+-rw-r--r--@ 1 user  staff  13 Jan  2  2020 main.rs
+-rwxr-xr-x@ 1 user  staff  21 Jan  2  2020 [31mrun.sh[39;49m[0m
+drwxr-xr-x@ 2 user  staff  64 Jan  2  2020 [1m[36msub[39;49m[0m

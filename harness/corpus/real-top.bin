@@ -1,0 +1,12 @@
+^DProcesses: 0 total, 0 running, 0 sleeping, 0 threads 
+0/0/0 0:0:0
+Load Avg: 0.0, 0.0, 0.0 
+CPU usage: 0.0% user, 0.0% sys, 0.0% idle 
+SharedLibs: 0M resident, 0M data, 0M linkedit.
+MemRegions: 0 total, 0G resident, 0M private, 0M shared.
+PhysMem: 0G used (0M wired, 0M compressor), 0M unused.
+VM: 0T vsize, 0M framework vsize, 0(0) swapins, 0(0) swapouts.
+Networks: packets: 0/0G in, 0/0M out.
+Disks: 0/0G read, 0/0G written.
+
+

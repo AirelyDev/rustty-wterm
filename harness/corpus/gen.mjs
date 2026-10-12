@@ -4,7 +4,7 @@
 // fragments below with a seeded PRNG, so regenerating gives identical bytes.
 //
 // Usage: node harness/corpus/gen.mjs
-import { mkdirSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -248,7 +248,15 @@ for (let seed = 1; seed <= FUZZ_SEEDS; seed++) {
 
 // -- Emit -----------------------------------------------------------------
 
-for (const f of readdirSync(here)) if (f.endsWith(".bin")) rmSync(join(here, f));
+// real-*.bin are recorded once by record.sh and committed; never delete or
+// rewrite them here, only register them as entries (size-capped).
+const REAL_MAX = 64 * 1024;
+for (const f of readdirSync(here).sort()) {
+  if (!/^real-.+\.bin$/.test(f)) continue;
+  if (statSync(join(here, f)).size > REAL_MAX) throw new Error(`${f} exceeds ${REAL_MAX} bytes`);
+  entries.push({ name: f.slice(0, -4), steps: [{ write: f }] });
+}
+for (const f of readdirSync(here)) if (f.endsWith(".bin") && !f.startsWith("real-")) rmSync(join(here, f));
 mkdirSync(here, { recursive: true });
 for (const [name, bytes] of bins) writeFileSync(join(here, `${name}.bin`), bytes);
 writeFileSync(join(here, "manifest.json"), JSON.stringify({ entries }, null, 2) + "\n");

@@ -62,6 +62,24 @@ leave them set), so those comparisons cannot silently become `{} === {}`.
 `kitty-image-rgb` is skipped: the Rust build has no kitty graphics (Task 5
 outcome B).
 
+## Real-program recordings
+
+`corpus/real-*.bin` are recorded once by `corpus/record.sh` (macOS: `ls`, `git
+log`, `vim`, `top`, and `less`/`bat` when installed) from `corpus/fixture/` and
+a throwaway fixed git repo, under an 80x24 pty with pinned `TERM`, `LC_ALL`, `TZ`
+and git identity/dates; user, home, host and temp paths are scrubbed. They are
+committed and never touched by `gen.mjs`, which only registers them as entries
+and refuses any over 64 KB. `record.sh` is re-runnable but is not part of
+`tools/check.sh`.
+
+## Robustness
+
+`node harness/robustness.mjs <wasm>` drives the wasm's own export list with a
+null handle, null buffers, `u32::MAX` offsets/lengths, extreme resizes and
+hostile payloads (64 KB OSC 52, 4 MB APC, CSI/SGR overflow, garbage), one fresh
+instance per scenario, and fails naming the export and arguments of any trap.
+Freed or arbitrary non-null pointers are excluded (undefined behaviour).
+
 ## Known diffs
 
 `known-diffs.json` is a list of
