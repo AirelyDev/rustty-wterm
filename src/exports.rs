@@ -189,3 +189,112 @@ pub extern "C" fn synchronized_output(ptr: usize) -> u32 {
 pub extern "C" fn kitty_keyboard_flags(ptr: usize) -> u32 {
     core(ptr).map_or(0, |c| c.kitty_keyboard_flags())
 }
+
+// -- Scrollback, graphemes, hyperlinks, wrap flags -------------------------
+
+#[no_mangle]
+pub extern "C" fn get_scrollback_count(ptr: usize) -> u32 {
+    core(ptr).map_or(0, |c| c.scrollback_count())
+}
+#[no_mangle]
+pub extern "C" fn get_scrollback_discarded_count(ptr: usize) -> u32 {
+    core(ptr).map_or(0, |c| c.scrollback_discarded())
+}
+
+fn scrollback_into(ptr: usize, offset: u32, buf: *mut u8, max_cols: u32, cell_bytes: usize) -> u32 {
+    let Some(c) = core(ptr) else { return 0 };
+    if buf.is_null() {
+        return 0;
+    }
+    let Some(n) = (max_cols as usize).checked_mul(cell_bytes) else {
+        return 0;
+    };
+    // SAFETY: JS allocated max_cols*cell_bytes bytes via alloc_buffer for this call.
+    c.scrollback_line(
+        offset,
+        unsafe { core::slice::from_raw_parts_mut(buf, n) },
+        max_cols,
+        cell_bytes,
+    )
+}
+
+#[no_mangle]
+pub extern "C" fn get_scrollback_line(ptr: usize, offset: u32, buf: *mut u8, max_cols: u32) -> u32 {
+    scrollback_into(ptr, offset, buf, max_cols, crate::cell::CELL_BYTES)
+}
+#[no_mangle]
+pub extern "C" fn get_scrollback_line_v2(
+    ptr: usize,
+    offset: u32,
+    buf: *mut u8,
+    max_cols: u32,
+) -> u32 {
+    scrollback_into(ptr, offset, buf, max_cols, crate::cell::CELL_BYTES_V2)
+}
+
+/// `buf_ptr == 0` means a length query.
+fn out_slice<'a>(buf_ptr: usize, buf_len: u32) -> Option<&'a mut [u8]> {
+    if buf_ptr == 0 {
+        return None;
+    }
+    // SAFETY: JS passes a buffer of `buf_len` bytes from `alloc_buffer`.
+    Some(unsafe { core::slice::from_raw_parts_mut(buf_ptr as *mut u8, buf_len as usize) })
+}
+
+#[no_mangle]
+pub extern "C" fn get_scrollback_grapheme(
+    ptr: usize,
+    offset: u32,
+    col: u32,
+    buf_ptr: usize,
+    buf_len: u32,
+) -> u32 {
+    core(ptr).map_or(0, |c| {
+        c.grapheme_scrollback(offset, col, out_slice(buf_ptr, buf_len))
+    })
+}
+#[no_mangle]
+pub extern "C" fn get_scrollback_hyperlink(
+    ptr: usize,
+    offset: u32,
+    col: u32,
+    buf_ptr: usize,
+    buf_len: u32,
+) -> u32 {
+    core(ptr).map_or(0, |c| {
+        c.hyperlink_scrollback(offset, col, out_slice(buf_ptr, buf_len))
+    })
+}
+#[no_mangle]
+pub extern "C" fn get_viewport_grapheme(
+    ptr: usize,
+    row: u32,
+    col: u32,
+    buf_ptr: usize,
+    buf_len: u32,
+) -> u32 {
+    core(ptr).map_or(0, |c| {
+        c.grapheme_viewport(row, col, out_slice(buf_ptr, buf_len))
+    })
+}
+#[no_mangle]
+pub extern "C" fn get_viewport_hyperlink(
+    ptr: usize,
+    row: u32,
+    col: u32,
+    buf_ptr: usize,
+    buf_len: u32,
+) -> u32 {
+    core(ptr).map_or(0, |c| {
+        c.hyperlink_viewport(row, col, out_slice(buf_ptr, buf_len))
+    })
+}
+
+#[no_mangle]
+pub extern "C" fn get_row_wraps(ptr: usize, row: u32) -> i32 {
+    core(ptr).map_or(-1, |c| c.row_wraps(row))
+}
+#[no_mangle]
+pub extern "C" fn get_scrollback_row_wraps(ptr: usize, offset: u32) -> i32 {
+    core(ptr).map_or(-1, |c| c.scrollback_row_wraps(offset))
+}

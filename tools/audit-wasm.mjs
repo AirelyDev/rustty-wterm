@@ -5,7 +5,10 @@ const REQUIRED = ["init", "deinit", "resize", "write", "get_cols", "get_rows", "
   "update", "get_viewport", "get_viewport_v2", "is_dirty", "is_dirty_row", "clear_dirty",
   "get_cursor_row", "get_cursor_col", "get_cursor_visible", "get_cursor_shape", "get_cursor_blinking",
   "cursor_keys_app", "bracketed_paste", "using_alt_screen", "mouse_tracking", "mouse_sgr", "mouse_encoding",
-  "focus_events", "synchronized_output", "kitty_keyboard_flags"];
+  "focus_events", "synchronized_output", "kitty_keyboard_flags",
+  "get_scrollback_count", "get_scrollback_discarded_count", "get_scrollback_line", "get_scrollback_line_v2",
+  "get_scrollback_grapheme", "get_scrollback_hyperlink", "get_viewport_grapheme", "get_viewport_hyperlink",
+  "get_row_wraps", "get_scrollback_row_wraps"];
 
 const module = new WebAssembly.Module(readFileSync(process.argv[2]));
 const imports = WebAssembly.Module.imports(module);

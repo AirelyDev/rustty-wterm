@@ -1,15 +1,14 @@
 use rustty_vt::alloc::Global;
-use rustty_vt::color::{DynamicPalette, DynamicRGB, Palette, RGB};
+use rustty_vt::color::{DynamicPalette, DynamicRGB, RGB};
 use rustty_vt::kitty::graphics_image::Limits;
 use rustty_vt::modes::{Mode, ModePacked};
-use rustty_vt::page::{ContentTag, Wide};
 use rustty_vt::render::Dirty;
 use rustty_vt::render::RenderState;
-use rustty_vt::style::{Color, ColorTag};
 use rustty_vt::terminal::{Colors, Options, Resize, Terminal};
 use rustty_vt::TerminalStream;
 
-use crate::cell::{encode_cell, CellFields};
+use crate::cell::encode_cell;
+use crate::scrollback::{self, cell_fields};
 
 /// Cursor state as the `get_cursor_*` exports report it.
 #[derive(Clone, Copy, Debug)]
@@ -20,28 +19,6 @@ pub struct CursorInfo {
     /// 0 block (incl. hollow), 1 underline, 2 bar
     pub shape: u32,
     pub blinking: bool,
-}
-
-fn pack_flags(s: &rustty_vt::style::Style) -> u8 {
-    use rustty_vt::sgr::Underline;
-    let f = &s.flags;
-    u8::from(f.bold)
-        | (u8::from(f.faint) << 1)
-        | (u8::from(f.italic) << 2)
-        | (u8::from(f.underline != Underline::None) << 3)
-        | (u8::from(f.blink) << 4)
-        | (u8::from(f.inverse) << 5)
-        | (u8::from(f.invisible) << 6)
-        | (u8::from(f.strikethrough) << 7)
-}
-
-fn resolve(c: Color, palette: &Palette) -> [u8; 3] {
-    let rgb = match c.tag() {
-        ColorTag::None => RGB { r: 0, g: 0, b: 0 },
-        ColorTag::Palette => palette[c.palette() as usize],
-        ColorTag::Rgb => c.rgb(),
-    };
-    [rgb.r, rgb.g, rgb.b]
 }
 
 /// One terminal plus everything the wterm ABI hangs off it. The `Terminal` is
@@ -56,6 +33,22 @@ pub struct Core {
     terminal: Box<Terminal>,
     cols: u16,
     rows: u16,
+    discard: DiscardTracker,
+}
+
+/// `PageList.discardedRows` is a counter the wterm Zig patch adds to ghostty;
+/// `rustty-vt` has no such counter and is read-only here, so it is derived from
+/// page bookkeeping at each write: pages that existed before and are gone now
+/// were pruned from the oldest end (`pages_before + serials_issued -
+/// pages_after`), each worth a full page of rows. Exact for whole-page prunes
+/// (the only kind `grow` performs); pages both created and pruned inside one
+/// write are still counted because `page_serial` advances per allocation.
+#[derive(Default)]
+struct DiscardTracker {
+    serial: u64,
+    pages: usize,
+    discarded: u32,
+    primary: bool,
 }
 
 fn rgb(v: u32) -> DynamicRGB {
@@ -106,17 +99,74 @@ impl Core {
         // `terminal`, so it drops first and never outlives its referent. The
         // `'static` lifetime is never exposed outside `Core`.
         let stream: TerminalStream<'static> = unsafe { core::mem::transmute(terminal.vt_stream()) };
-        Some(Box::new(Core {
+        let mut core = Box::new(Core {
             stream,
             render: RenderState::empty(),
             terminal,
             cols,
             rows,
-        }))
+            discard: DiscardTracker::default(),
+        });
+        core.discard_rebaseline();
+        Some(core)
     }
 
     pub fn write(&mut self, data: &[u8]) {
         self.stream.next_slice(data);
+        self.discard_sample();
+    }
+
+    fn primary_pages(&self) -> Option<(u64, usize, usize)> {
+        let screen = self.terminal.screens.active;
+        if screen.is_null()
+            || self.terminal.screens.active_key != rustty_vt::screen_set::Key::Primary
+        {
+            return None;
+        }
+        // SAFETY: `active` points at a screen owned by `terminal.screens`.
+        let pages = unsafe { &(*screen).pages };
+        let first = pages.pages.first;
+        let first_rows = if first.is_null() {
+            0
+        } else {
+            // SAFETY: non-null list node; reads metadata only.
+            unsafe { rustty_vt::pagelist::Node::rows(first) as usize }
+        };
+        Some((pages.page_serial, pages.total_pages(), first_rows))
+    }
+
+    fn discard_rebaseline(&mut self) {
+        match self.primary_pages() {
+            Some((serial, pages, _)) => {
+                self.discard.serial = serial;
+                self.discard.pages = pages;
+                self.discard.primary = true;
+            }
+            None => self.discard.primary = false,
+        }
+    }
+
+    fn discard_sample(&mut self) {
+        let Some((serial, pages, first_rows)) = self.primary_pages() else {
+            self.discard.primary = false;
+            return;
+        };
+        if !self.discard.primary || serial < self.discard.serial {
+            // Returned from the alt screen, or the list was rebuilt.
+            self.discard_rebaseline();
+            return;
+        }
+        let issued = (serial - self.discard.serial) as usize;
+        let pruned = (self.discard.pages + issued).saturating_sub(pages);
+        if pruned > 0 {
+            let rows = pruned.saturating_mul(first_rows);
+            self.discard.discarded = self
+                .discard
+                .discarded
+                .saturating_add(u32::try_from(rows).unwrap_or(u32::MAX));
+        }
+        self.discard.serial = serial;
+        self.discard.pages = pages;
     }
 
     pub fn resize(&mut self, cols: u16, rows: u16) {
@@ -134,6 +184,7 @@ impl Core {
             self.cols = cols;
             self.rows = rows;
         }
+        self.discard_rebaseline();
     }
 
     pub fn cols(&self) -> u32 {
@@ -196,52 +247,7 @@ impl Core {
                 } else {
                     rustty_vt::style::Style::default()
                 };
-                let tag = raw.content_tag();
-                let codepoint = match tag {
-                    ContentTag::Codepoint | ContentTag::CodepointGrapheme => {
-                        raw.content_codepoint()
-                    }
-                    _ => 0,
-                };
-                let has_fg = style.fg_color.tag() != ColorTag::None;
-                let has_bg_style = style.bg_color.tag() != ColorTag::None;
-                let has_bg_cell =
-                    matches!(tag, ContentTag::BgColorPalette | ContentTag::BgColorRgb);
-                let bg = if has_bg_cell {
-                    let c = match tag {
-                        ContentTag::BgColorPalette => palette[raw.content_color_palette() as usize],
-                        _ => {
-                            let c = raw.content_color_rgb();
-                            RGB {
-                                r: c.r,
-                                g: c.g,
-                                b: c.b,
-                            }
-                        }
-                    };
-                    Some([c.r, c.g, c.b])
-                } else if has_bg_style {
-                    Some(resolve(style.bg_color, palette))
-                } else {
-                    None
-                };
-                let wide = raw.wide();
-                let fields = CellFields {
-                    codepoint,
-                    fg: has_fg.then(|| resolve(style.fg_color, palette)),
-                    bg,
-                    flags: pack_flags(&style),
-                    width: match wide {
-                        Wide::Narrow | Wide::SpacerHead => 1,
-                        Wide::Wide => 2,
-                        Wide::SpacerTail => 0,
-                    },
-                    has_grapheme: tag == ContentTag::CodepointGrapheme,
-                    has_hyperlink: raw.hyperlink(),
-                    spacer_head: wide == Wide::SpacerHead,
-                    underline: style.flags.underline as u8,
-                    underline_rgb: style.underline_color(palette).map(|c| [c.r, c.g, c.b]),
-                };
+                let fields = cell_fields(raw, &style, palette);
                 encode_cell(&fields, dst);
             }
         }
@@ -334,5 +340,66 @@ impl Core {
         // SAFETY: `active` points at a screen owned by `terminal.screens`,
         // which outlives this borrow; we only read a Copy field.
         u32::from(unsafe { (*screen).kitty_keyboard.current().int() })
+    }
+
+    pub fn scrollback_count(&self) -> u32 {
+        scrollback::count(&self.terminal)
+    }
+
+    /// Rows pruned from the oldest end of the primary screen's history.
+    pub fn scrollback_discarded(&self) -> u32 {
+        if self.discard.primary {
+            self.discard.discarded
+        } else {
+            0
+        }
+    }
+
+    pub fn scrollback_line(
+        &self,
+        offset: u32,
+        out: &mut [u8],
+        max_cols: u32,
+        cell_bytes: usize,
+    ) -> u32 {
+        scrollback::line(&self.terminal, offset, out, max_cols, cell_bytes)
+    }
+
+    pub fn grapheme_viewport(&self, row: u32, col: u32, out: Option<&mut [u8]>) -> u32 {
+        let rs = &self.render;
+        if row >= u32::from(rs.rows) || col >= u32::from(rs.cols) {
+            return 0;
+        }
+        let Some(r) = rs.row_data.get(row as usize) else {
+            return 0;
+        };
+        let cells = r.cells.slice();
+        let x = col as usize;
+        match cells.raw.get(x) {
+            Some(raw) if raw.content_tag() == rustty_vt::page::ContentTag::CodepointGrapheme => {
+                scrollback::encode_grapheme(raw.content_codepoint(), cells.grapheme(x), out)
+            }
+            _ => 0,
+        }
+    }
+
+    pub fn grapheme_scrollback(&self, offset: u32, col: u32, out: Option<&mut [u8]>) -> u32 {
+        scrollback::grapheme_history(&self.terminal, offset, col, out)
+    }
+
+    pub fn hyperlink_viewport(&self, row: u32, col: u32, out: Option<&mut [u8]>) -> u32 {
+        scrollback::hyperlink_viewport(&self.terminal, row, col, out)
+    }
+
+    pub fn hyperlink_scrollback(&self, offset: u32, col: u32, out: Option<&mut [u8]>) -> u32 {
+        scrollback::hyperlink_history(&self.terminal, offset, col, out)
+    }
+
+    pub fn row_wraps(&self, row: u32) -> i32 {
+        scrollback::row_wraps(&self.terminal, row)
+    }
+
+    pub fn scrollback_row_wraps(&self, offset: u32) -> i32 {
+        scrollback::history_row_wraps(&self.terminal, offset)
     }
 }

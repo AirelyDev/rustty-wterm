@@ -3,6 +3,7 @@
 
 pub mod cell;
 mod core;
+mod scrollback;
 pub use crate::core::Core;
 
 #[cfg(target_arch = "wasm32")]
