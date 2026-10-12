@@ -74,9 +74,10 @@ pub extern "C" fn alloc_buffer(len: u32) -> usize {
 #[no_mangle]
 pub extern "C" fn free_buffer(ptr: usize, len: u32) {
     if ptr != 0 {
-        // SAFETY: `ptr`/`len` are exactly what `alloc_buffer` returned/received.
+        // SAFETY: `ptr`/`len` are exactly what `alloc_buffer` returned/received,
+        // i.e. a `Box<[u8]>` of `len` bytes from `Box::into_raw`.
         drop(unsafe {
-            Box::from_raw(core::slice::from_raw_parts_mut(
+            Box::from_raw(core::ptr::slice_from_raw_parts_mut(
                 ptr as *mut u8,
                 len as usize,
             ))
